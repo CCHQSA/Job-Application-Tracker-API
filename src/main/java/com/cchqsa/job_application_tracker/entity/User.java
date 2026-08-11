@@ -3,11 +3,15 @@ package com.cchqsa.job_application_tracker.entity;
 import com.cchqsa.job_application_tracker.enums.Role;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 @Entity
 @Table(name = "users")
+@Getter
+@Setter
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -1,10 +1,7 @@
-package com.cchqsa.job_application_tracker.entity;
+package com.cchqsa.job_application_tracker.dto;
 
 import com.cchqsa.job_application_tracker.enums.ApplicationStatus;
 import com.cchqsa.job_application_tracker.enums.Currencies;
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,37 +9,26 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-@Entity
-@Table(name = "applications")
 @Getter
 @Setter
-public class Application {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class ApplicationDto {
+
     private Long id;
 
-    @NotBlank
     private String company;
 
-    @NotBlank
     private String position;
 
-    @NotBlank
     private String location;
 
-    @NotNull
     private BigDecimal salaryFrom;
 
-    @NotNull
     private BigDecimal salaryTo;
 
-    @Enumerated(EnumType.STRING)
     private ApplicationStatus status;
 
-    @Enumerated(EnumType.STRING)
     private Currencies currency;
 
-    @NotNull
     private LocalDate applicationDate;
 
     private String jobUrl;
@@ -55,7 +41,4 @@ public class Application {
 
     private LocalDateTime updatedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
 }
