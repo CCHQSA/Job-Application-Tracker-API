@@ -1,0 +1,44 @@
+package com.cchqsa.job_application_tracker.Controller;
+
+import com.cchqsa.job_application_tracker.dto.ApplicationRequestDto;
+import com.cchqsa.job_application_tracker.entity.Application;
+import com.cchqsa.job_application_tracker.entity.User;
+import com.cchqsa.job_application_tracker.service.ApplicationService;
+import com.cchqsa.job_application_tracker.service.UserService;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
+
+@Controller
+public class ApplicationController {
+
+    private final UserService userService;
+    private final ApplicationService applicationService;
+
+    public ApplicationController(UserService userService, ApplicationService applicationService) {
+        this.userService = userService;
+        this.applicationService = applicationService;
+    }
+
+    @PostMapping("/api/applications")
+    public String addApplication(@AuthenticationPrincipal UserDetails userDetails,
+                                 @ModelAttribute ApplicationRequestDto dto) {
+        User currUser = userService.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Application application = new Application();
+        application.setCompany(dto.getCompany());
+        application.setPosition(dto.getPosition());
+        application.setSalaryFrom(dto.getSalaryFrom());
+        application.setSalaryTo(dto.getSalaryTo());
+        application.setLocation(dto.getLocation());
+        application.setApplicationDate(dto.getApplicationDate());
+        application.setUser(currUser);
+
+        applicationService.addApplication(application);
+
+        return "redirect:/home";
+    }
+}

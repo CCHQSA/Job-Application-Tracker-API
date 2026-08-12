@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log In - JobTrack</title>
+  <link rel="stylesheet" th:href="@{/css/general.css}">
+  <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+<body class="auth-body">
+
+<div class="auth-container">
+  <div class="auth-header">
+    <a th:href="@{/general}" class="auth-logo">JobTrack</a>
+    <h1>Welcome back</h1>
+    <p class="auth-subtitle">Log in to manage your job applications</p>
+  </div>
+
+  <form th:action="@{/login}" method="POST" class="auth-form">
+
+    <div class="form-group">
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" required placeholder="john.doe@example.com">
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required placeholder="Pass1234!">
+    </div>
+
+    <button type="submit" class="auth-button">Log In</button>
+  </form>
+
+  <div class="auth-footer">
+    <p>Don't have an account? <a th:href="@{/register}">Get Started</a></p>
+  </div>
+</div>
+
+</body>
+</html>

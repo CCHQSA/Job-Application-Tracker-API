@@ -8,4 +8,9 @@ import java.util.Optional;
 @Service
 public interface UserService {
     Optional<User> findByEmail(String username);
+
+    Optional<User> createUser(String email, String password, String name, String lastName);
+
+    String registerAndGetToken(String email, String password, String name, String lastName);
 }
+

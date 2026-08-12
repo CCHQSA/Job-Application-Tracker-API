@@ -4,7 +4,10 @@ import com.cchqsa.job_application_tracker.dto.UserDto;
 import com.cchqsa.job_application_tracker.entity.User;
 import com.cchqsa.job_application_tracker.enums.Role;
 import com.cchqsa.job_application_tracker.mapper.ModelMapper;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
 
+@Component
 public class UserMapper implements ModelMapper<User, UserDto> {
 
     @Override
