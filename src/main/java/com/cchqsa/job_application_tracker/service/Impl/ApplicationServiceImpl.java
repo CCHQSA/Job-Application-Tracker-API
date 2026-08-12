@@ -43,5 +43,10 @@ public class ApplicationServiceImpl implements ApplicationService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void deleteByIdAndUser(Long id, User user) {
+        userRepository.deleteByIdAndUser(id, user);
+    }
+
 
 }

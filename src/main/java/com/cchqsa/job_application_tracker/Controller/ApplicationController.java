@@ -9,10 +9,9 @@ import com.cchqsa.job_application_tracker.service.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -27,28 +26,39 @@ public class ApplicationController {
         this.applicationService = applicationService;
     }
 
-    @PostMapping("/api/applications")
-    public String addApplication(@AuthenticationPrincipal UserDetails userDetails,
-                                 @ModelAttribute ApplicationRequestDto dto) {
-        saveApplicationFromDto(userDetails, dto);
-        return "redirect:/home";
-    }
 
     @GetMapping("/applications")
     public String listApplications(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         User user = userService.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         List<Application> applications = applicationService.getUserApplications(user);
+        model.addAttribute("activeTab", "applications");
         model.addAttribute("applications", applications);
         return "applications";
     }
 
     @PostMapping("/applications")
     public String addToApplications(@AuthenticationPrincipal UserDetails userDetails,
-                                    @ModelAttribute ApplicationRequestDto dto) {
+                                    @ModelAttribute ApplicationRequestDto dto,
+                                    @RequestParam(name = "sourcePage", defaultValue = "applications") String sourcePage) {
         saveApplicationFromDto(userDetails, dto);
+
+        if ("home".equals(sourcePage)) {
+            return "redirect:/home";
+        }
+
         return "redirect:/applications";
     }
+
+    @Transactional
+    @PostMapping("/applications/delete/{id}")
+    public String deleteApplication(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long id) {
+        applicationService.deleteByIdAndUser(id, userService.findByEmail(userDetails.getUsername()).get());
+        return "redirect:/applications";
+    }
+
 
     private void saveApplicationFromDto(UserDetails userDetails, ApplicationRequestDto dto) {
         User currUser = userService.findByEmail(userDetails.getUsername())

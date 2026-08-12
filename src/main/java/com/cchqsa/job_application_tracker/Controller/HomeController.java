@@ -26,14 +26,17 @@ public class HomeController {
     }
 
     @GetMapping("/home")
-    public String home(@AuthenticationPrincipal UserDetails userDetails,
-                       Model model) {
+    public String home(@AuthenticationPrincipal UserDetails userDetails, Model model) {
         User user = userService.findByEmail(userDetails.getUsername()).orElseThrow(() -> new RuntimeException("User not found"));
         List<Application> applications = applicationService.getUserApplications(user);
-        List<Application> recentApplications = applicationService.getRecentApplications(user,applications);
+        List<Application> recentApplications = applicationService.getRecentApplications(user, applications);
+
+        model.addAttribute("activeTab", "home");
+
         model.addAttribute("totalApplications", applications.size());
         model.addAttribute("recentApplications", recentApplications);
         model.addAttribute("user", user);
         return "home";
     }
+
 }

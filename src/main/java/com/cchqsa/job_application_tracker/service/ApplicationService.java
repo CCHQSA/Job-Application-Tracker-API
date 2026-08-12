@@ -11,4 +11,6 @@ public interface ApplicationService {
     List<Application> getUserApplications(User user);
 
     public List<Application> getRecentApplications(User user, List<Application> applications);
+
+    void deleteByIdAndUser(Long id, User user);
 }

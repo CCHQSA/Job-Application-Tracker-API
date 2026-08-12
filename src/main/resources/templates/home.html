@@ -12,15 +12,24 @@
 <aside class="sidebar">
   <div class="sidebar-brand">JobTrack</div>
   <nav class="sidebar-menu">
-    <a th:href="@{/home}" class="menu-item active">Dashboard</a>
-    <a th:href="@{/applications}" class="menu-item">Applications</a>
-    <a th:href="@{/interviews}" class="menu-item">Interviews</a>
-    <a th:href="@{/statistics}" class="menu-item">Statistics</a>
+    <a th:href="@{/home}"
+       class="menu-item"
+       th:classappend="${activeTab == 'home' ? 'active' : ''}">Dashboard</a>
+    <a th:href="@{/applications}"
+       class="menu-item"
+       th:classappend="${activeTab == 'applications' ? 'active' : ''}">Applications</a>
+    <a th:href="@{/interviews}"
+       class="menu-item"
+       th:classappend="${activeTab == 'interviews' ? 'active' : ''}">Interviews</a>
+    <a th:href="@{/statistics}"
+       class="menu-item"
+       th:classappend="${activeTab == 'statistics' ? 'active' : ''}">Statistics</a>
   </nav>
   <div class="sidebar-footer">
     <a th:href="@{/logout}" class="logout-link">Log Out</a>
   </div>
 </aside>
+
 
 <div class="dashboard-container">
 
@@ -54,7 +63,8 @@
 
         <section class="quick-add-section">
           <h2>Quick Add Application</h2>
-          <form th:action="@{/api/applications}" method="POST" class="quick-add-form">
+          <form th:action="@{/applications}" method="POST" class="quick-add-form">
+            <input type="hidden" name="sourcePage" value="home">
             <div class="form-group">
               <label for="company">Company</label>
               <input type="text" id="company" name="company" required placeholder="Google">
