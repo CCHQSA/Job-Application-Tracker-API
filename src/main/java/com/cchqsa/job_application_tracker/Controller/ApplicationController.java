@@ -34,6 +34,7 @@ public class ApplicationController {
         List<Application> applications = applicationService.getUserApplications(user);
         model.addAttribute("activeTab", "applications");
         model.addAttribute("applications", applications);
+
         return "applications";
     }
 
@@ -73,7 +74,6 @@ public class ApplicationController {
         application.setApplicationDate(dto.getApplicationDate());
         application.setUser(currUser);
         application.setStatus(ApplicationStatus.APPLIED);
-
         applicationService.addApplication(application);
     }
 }

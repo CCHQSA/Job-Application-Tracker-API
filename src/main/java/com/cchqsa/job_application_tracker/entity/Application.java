@@ -11,6 +11,7 @@ import lombok.Setter;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "applications")
@@ -41,7 +42,7 @@ public class Application {
     private ApplicationStatus status = ApplicationStatus.APPLIED;
 
     @Enumerated(EnumType.STRING)
-    private Currencies currency;
+    private Currencies currency = Currencies.USD;
 
     @NotNull
     private LocalDate applicationDate;
@@ -52,11 +53,14 @@ public class Application {
 
     private String notes;
 
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     private LocalDateTime updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    @OneToMany(mappedBy = "application")
+    List<Interview> interviews;
 }

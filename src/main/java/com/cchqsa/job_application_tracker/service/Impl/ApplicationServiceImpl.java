@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,6 +47,11 @@ public class ApplicationServiceImpl implements ApplicationService {
     @Override
     public void deleteByIdAndUser(Long id, User user) {
         userRepository.deleteByIdAndUser(id, user);
+    }
+
+    @Override
+    public Optional<Application> findApplicationById(Long id) {
+        return applicationRepository.findById(id);
     }
 
 
