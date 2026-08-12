@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ApplicationServiceImpl implements ApplicationService {
@@ -31,17 +32,15 @@ public class ApplicationServiceImpl implements ApplicationService {
         return applicationRepository.getApplicationsByUser(user);
     }
 
-    @Override
     public List<Application> getRecentApplications(User user, List<Application> applications) {
-        if (applications == null || user == null) {
-            return Collections.emptyList();
-        }
-
+        if (applications == null) return List.of();
         return applications.stream()
-                .filter(app -> app.getUser() != null && app.getUser().getId().equals(user.getId()))
-                .sorted(Comparator.comparing(Application::getCreatedAt).reversed())
-                .limit(3)
-                .toList(); // Для Java 16+. Якщо версія нижча, використовуйте .collect(Collectors.toList())
+                .sorted(Comparator.comparing(
+                        Application::getApplicationDate,
+                        Comparator.nullsLast(Comparator.reverseOrder())
+                ))
+                .limit(5)
+                .collect(Collectors.toList());
     }
 
 

@@ -40,11 +40,11 @@
       </div>
       <div class="stat-card">
         <h3>Interviews Scheduled</h3>
-        <p class="stat-number color-primary" th:text="${interviewsScheduled}">0</p>
+        <p class="stat-number color-primary" th:text="${interviewsScheduled != null ? interviewsScheduled : 0}">0</p>
       </div>
       <div class="stat-card">
         <h3>Offers Received</h3>
-        <p class="stat-number color-success" th:text="${offersReceived}">0</p>
+        <p class="stat-number color-success" th:text="${offersReceived != null ? offersReceived : 0}">0</p>
       </div>
     </section>
 
@@ -82,7 +82,7 @@
             <div class="form-group">
               <label for="applicationDate">Application Date</label>
               <input type="date" id="applicationDate" name="applicationDate" required
-                     th:value="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}">
+                     th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
             </div>
 
             <button type="submit" class="primary-button btn-full">Add Application</button>
@@ -99,8 +99,11 @@
                 <p><span th:text="${app.company}">Company</span> &bull; <span th:text="${app.location}">Location</span></p>
               </div>
               <span class="status-badge"
-                    th:classappend="${app.status?.name() == 'APPLIED' ? 'status-applied' : 'status-interview'}"
+                    th:classappend="${app.status?.name() == 'INTERVIEW' ? 'status-interview' : 'status-applied'}"
                     th:text="${app.status}">Status</span>
+            </div>
+            <div th:if="${#lists.isEmpty(recentApplications)}" class="app-info">
+              <p>No recent applications found.</p>
             </div>
           </div>
         </section>
@@ -112,6 +115,7 @@
         <section class="upcoming-interviews">
           <h2>Upcoming Interviews</h2>
           <div class="interview-list">
+            <p style="color: var(--text-muted); font-size: 0.875rem;">No interviews scheduled yet.</p>
           </div>
         </section>
 

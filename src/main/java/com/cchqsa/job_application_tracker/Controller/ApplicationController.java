@@ -30,6 +30,27 @@ public class ApplicationController {
     @PostMapping("/api/applications")
     public String addApplication(@AuthenticationPrincipal UserDetails userDetails,
                                  @ModelAttribute ApplicationRequestDto dto) {
+        saveApplicationFromDto(userDetails, dto);
+        return "redirect:/home";
+    }
+
+    @GetMapping("/applications")
+    public String listApplications(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        User user = userService.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        List<Application> applications = applicationService.getUserApplications(user);
+        model.addAttribute("applications", applications);
+        return "applications";
+    }
+
+    @PostMapping("/applications")
+    public String addToApplications(@AuthenticationPrincipal UserDetails userDetails,
+                                    @ModelAttribute ApplicationRequestDto dto) {
+        saveApplicationFromDto(userDetails, dto);
+        return "redirect:/applications";
+    }
+
+    private void saveApplicationFromDto(UserDetails userDetails, ApplicationRequestDto dto) {
         User currUser = userService.findByEmail(userDetails.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
@@ -41,20 +62,8 @@ public class ApplicationController {
         application.setLocation(dto.getLocation());
         application.setApplicationDate(dto.getApplicationDate());
         application.setUser(currUser);
-
         application.setStatus(ApplicationStatus.APPLIED);
 
         applicationService.addApplication(application);
-
-        return "redirect:/home";
-    }
-
-    @GetMapping("/applications")
-    public String listApplications(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-        User user = userService.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        List<Application> applications = applicationService.getUserApplications(user);
-        model.addAttribute("applications", applications);
-        return "applications";
     }
 }
