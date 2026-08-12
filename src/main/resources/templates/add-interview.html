@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Add Interview - JobTrack</title>
+  <link rel="stylesheet" th:href="@{/css/add-interview.css}">
+</head>
+<body class="dashboard-body">
+<aside class="sidebar">
+  <a th:href="@{/home}" class="sidebar-brand">JobTrack</a>
+  <nav class="sidebar-menu">
+    <a th:href="@{/home}" class="menu-item">Dashboard</a>
+    <a th:href="@{/applications}" class="menu-item">Applications</a>
+    <a th:href="@{/interviews}" class="menu-item active">Interviews</a>
+    <a th:href="@{/statistics}" class="menu-item">Statistics</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a th:href="@{/logout}" class="logout-link">Logout</a>
+  </div>
+</aside>
+
+<main class="dashboard-container">
+  <header class="dashboard-header">
+    <h1>Add Interview</h1>
+    <p>Schedule a new interview stage</p>
+  </header>
+
+  <section class="form-panel">
+    <h2>Interview Details</h2>
+    <p th:if="${error}" class="form-error" th:text="${error}" style="color: #ef4444; margin-bottom: 1rem; font-weight: 600;"></p>
+
+    <form th:action="@{/interviews/save}" method="POST" class="interview-form">
+
+      <div class="form-group" style="margin-bottom: 1.5rem;">
+        <label for="applicationId">Application</label>
+        <select id="applicationId" name="applicationId" required style="width: 100%; padding: 0.6rem 1rem; border: 1px solid #e2e8f0; border-radius: 6px; background-color: #fff;">
+          <option value="" disabled th:selected="${application == null}">-- Select an Application --</option>
+          <option th:each="allApp : ${allApplicationsList}"
+                  th:value="${allApp.id}"
+                  th:text="|${allApp.company} - ${allApp.position}|"
+                  th:selected="${application != null and allApp.id == application.id}">Google - Developer</option>
+        </select>
+      </div>
+
+      <div class="form-row" style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+        <div class="form-group" style="flex: 1;">
+          <label for="type">Interview Type</label>
+          <select id="type" name="type" required style="width: 100%; padding: 0.6rem 1rem; border: 1px solid #e2e8f0; border-radius: 6px;">
+            <option th:each="typeOpt : ${T(com.cchqsa.job_application_tracker.enums.InterviewType).values()}"
+                    th:value="${typeOpt}"
+                    th:text="${typeOpt}">HR</option>
+          </select>
+        </div>
+
+        <div class="form-group" style="flex: 1;">
+          <label for="status">Status</label>
+          <select id="status" name="status" required style="width: 100%; padding: 0.6rem 1rem; border: 1px solid #e2e8f0; border-radius: 6px;">
+            <option th:each="statusOpt : ${T(com.cchqsa.job_application_tracker.enums.InterviewStatus).values()}"
+                    th:value="${statusOpt}"
+                    th:text="${statusOpt}">SCHEDULED</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-row" style="display: flex; gap: 1rem; margin-bottom: 1.5rem;">
+        <div class="form-group" style="flex: 1;">
+          <label for="dateTime">Date and Time</label>
+          <input type="datetime-local" id="dateTime" name="dateTime" required style="width: 100%; padding: 0.6rem 1rem; border: 1px solid #e2e8f0; border-radius: 6px;">
+        </div>
+
+        <div class="form-group" style="flex: 1;">
+          <label for="interviewer">Interviewer</label>
+          <input type="text" id="interviewer" name="interviewer" required placeholder="John Doe" style="width: 100%; padding: 0.6rem 1rem; border: 1px solid #e2e8f0; border-radius: 6px;">
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 1.5rem;">
+        <label for="location">Location</label>
+        <input type="text" id="location" name="location" placeholder="Office, phone, or remote" style="width: 100%; padding: 0.6rem 1rem; border: 1px solid #e2e8f0; border-radius: 6px;">
+      </div>
+
+      <div class="form-group" style="margin-bottom: 1.5rem;">
+        <label for="meetingUrl">Meeting URL</label>
+        <input type="url" id="meetingUrl" name="meetingUrl" placeholder="https://example.com..." style="width: 100%; padding: 0.6rem 1rem; border: 1px solid #e2e8f0; border-radius: 6px;">
+      </div>
+
+      <div class="form-group" style="margin-bottom: 1.5rem;">
+        <label for="notes">Notes</label>
+        <textarea id="notes" name="notes" rows="5" placeholder="Preparation notes or discussion points" style="width: 100%; padding: 0.6rem 1rem; border: 1px solid #e2e8f0; border-radius: 6px; font-family: inherit; resize: vertical;"></textarea>
+      </div>
+
+      <div class="form-actions" style="display: flex; gap: 1rem; justify-content: flex-end;">
+        <button type="submit" class="primary-button" style="background-color: #2563eb; color: white; border: none; padding: 0.6rem 1.2rem; border-radius: 6px; font-weight: 600; cursor: pointer;">Save Interview</button>
+        <a th:href="@{/interviews}" class="secondary-button" style="background-color: #e2e8f0; color: #334155; text-decoration: none; padding: 0.6rem 1.2rem; border-radius: 6px; font-weight: 600;">Cancel</a>
+      </div>
+    </form>
+  </section>
+</main>
+</body>
+</html>

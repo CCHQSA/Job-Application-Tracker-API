@@ -125,9 +125,29 @@
         <section class="upcoming-interviews">
           <h2>Upcoming Interviews</h2>
           <div class="interview-list">
-            <p style="color: var(--text-muted); font-size: 0.875rem;">No interviews scheduled yet.</p>
+
+            <div class="app-item" th:each="interview : ${upcomingInterviews}">
+              <div class="app-info">
+                <h4 th:text="${interview.application.position}">Position</h4>
+                <p>
+                  <strong th:text="${interview.application.company}">Company</strong> &bull;
+                  <span th:text="${#temporals.format(interview.dateTime, 'yyyy-MM-dd HH:mm')}">Date & Time</span>
+                </p>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">
+                  Interviewer: <span th:text="${interview.interviewer}">Name</span>
+                  <span th:if="${interview.type != null}">(&nbsp;<span th:text="${interview.type}">TYPE</span>&nbsp;)</span>
+                </p>
+              </div>
+
+              <span class="status-badge status-interview" th:text="${interview.status}">Status</span>
+            </div>
+            <div th:if="${#lists.isEmpty(upcomingInterviews)}" class="app-info">
+              <p style="color: var(--text-muted); font-size: 0.875rem;">No interviews scheduled yet.</p>
+            </div>
+
           </div>
         </section>
+
 
       </div>
 

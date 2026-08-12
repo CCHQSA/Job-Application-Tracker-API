@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Statistics - JobTrack</title>
+  <link rel="stylesheet" th:href="@{/css/applications.css}">
+</head>
+<body class="dashboard-body">
+<aside class="sidebar">
+  <a th:href="@{/home}" class="sidebar-brand">Tracker</a>
+  <nav class="sidebar-menu">
+    <a th:href="@{/home}" class="menu-item">Dashboard</a>
+    <a th:href="@{/applications}" class="menu-item">Applications</a>
+    <a th:href="@{/interviews}" class="menu-item">Interviews</a>
+    <a th:href="@{/statistics}" class="menu-item active">Statistics</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a th:href="@{/logout}" class="logout-link">Logout</a>
+  </div>
+</aside>
+
+<main class="dashboard-container">
+  <header class="dashboard-header">
+    <h1>Statistics</h1>
+  </header>
+
+  <div class="stats-overview">
+    <div class="stat-card">
+      <h3>Total Applications</h3>
+      <div class="stat-number color-primary" th:text="${totalApplications}">0</div>
+    </div>
+    <div class="stat-card">
+      <h3>Interviews</h3>
+      <div class="stat-number color-success" th:text="${totalInterviews}">0</div>
+    </div>
+  </div>
+</main>
+</body>
+</html>

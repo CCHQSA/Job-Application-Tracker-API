@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="stylesheet" th:href="@{/css/applications.css}">
+</head>
+<body class="dashboard-body">
+<aside class="sidebar">
+  <a href="/dashboard" class="sidebar-brand">Tracker</a>
+  <nav class="sidebar-menu">
+    <a href="/home"
+       class="menu-item"
+       th:classappend="${activeTab == 'home' ? 'active' : ''}">Dashboard</a>
+    <a href="/applications"
+       class="menu-item"
+       th:classappend="${activeTab == 'applications' ? 'active' : ''}">Applications</a>
+    <a href="/interviews"
+       class="menu-item"
+       th:classappend="${activeTab == 'interviews' ? 'active' : ''}">Interviews</a>
+    <a href="/settings"
+       class="menu-item"
+       th:classappend="${activeTab == 'settings' ? 'active' : ''}">Settings</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a href="/logout" class="logout-link">Logout</a>
+  </div>
+</aside>
+
+
+<main class="dashboard-container">
+  <header class="dashboard-header">
+    <h1>Your Applications</h1>
+  </header>
+
+  <div class="stats-overview">
+    <div class="stat-card">
+      <h3>Total Applications</h3>
+      <div class="stat-number color-primary" th:text="${#lists.size(applications)}">0</div>
+    </div>
+    <div class="stat-card">
+      <h3>Interviews</h3>
+      <div class="stat-number color-success">0</div>
+    </div>
+    <div class="stat-card">
+      <h3>Pending</h3>
+      <div class="stat-number">0</div>
+    </div>
+  </div>
+
+  <div class="dashboard-grid">
+    <div class="grid-column">
+      <section>
+        <h2>Recent Applications</h2>
+        <div class="app-list">
+          <div th:each="app : ${applications}" class="app-item">
+            <div class="app-info">
+              <h4 th:text="${app.company}">Company Name</h4>
+              <p th:text="${app.position}">Position</p>
+            </div>
+
+            <div class="app-actions">
+            <span th:text="${app.status}" class="status-badge"
+                  th:classappend="${app.status.name() == 'INTERVIEW' ? 'status-interview' : 'status-applied'}">
+                APPLIED
+            </span>
+
+              <form th:action="@{/applications/delete/{id}(id=${app.id})}" method="POST" style="display:inline;">
+                <input type="hidden" name="_method" value="DELETE" />
+                <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to delete this application?');">
+                  Delete
+                </button>
+              </form>
+            </div>
+          </div>
+          <div th:if="${#lists.isEmpty(applications)}" class="app-info">
+            <p>No applications found.</p>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <div class="grid-column">
+      <section>
+        <h2>Quick Add</h2>
+        <form th:action="@{/applications}" method="POST" class="quick-add-form">
+          <input type="hidden" name="sourcePage" value="applications">
+          <div class="form-group">
+            <label for="company">Company</label>
+            <input type="text" id="company" name="company" required placeholder="Google">
+          </div>
+
+          <div class="form-group">
+            <label for="position">Position</label>
+            <input type="text" id="position" name="position" required placeholder="Software Engineer">
+          </div>
+
+          <div class="form-group">
+            <label for="location">Location</label>
+            <input type="text" id="location" name="location" required placeholder="Kyiv or Remote">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="salaryFrom">Salary From</label>
+              <input type="number" id="salaryFrom" name="salaryFrom" required placeholder="3000">
+            </div>
+            <div class="form-group">
+              <label for="salaryTo">Salary To</label>
+              <input type="number" id="salaryTo" name="salaryTo" required placeholder="4500">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="applicationDate">Application Date</label>
+            <input type="date" id="applicationDate" name="applicationDate" required
+                   th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+          </div>
+
+          <button type="submit" class="btn-full">Add Application</button>
+        </form>
+      </section>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>
