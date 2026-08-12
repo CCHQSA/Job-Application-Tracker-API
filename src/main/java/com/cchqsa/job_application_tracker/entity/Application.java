@@ -37,7 +37,8 @@ public class Application {
     private BigDecimal salaryTo;
 
     @Enumerated(EnumType.STRING)
-    private ApplicationStatus status;
+    @Column(nullable = false)
+    private ApplicationStatus status = ApplicationStatus.APPLIED;
 
     @Enumerated(EnumType.STRING)
     private Currencies currency;

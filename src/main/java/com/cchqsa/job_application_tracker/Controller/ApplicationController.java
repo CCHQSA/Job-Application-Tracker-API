@@ -3,13 +3,18 @@ package com.cchqsa.job_application_tracker.Controller;
 import com.cchqsa.job_application_tracker.dto.ApplicationRequestDto;
 import com.cchqsa.job_application_tracker.entity.Application;
 import com.cchqsa.job_application_tracker.entity.User;
+import com.cchqsa.job_application_tracker.enums.ApplicationStatus;
 import com.cchqsa.job_application_tracker.service.ApplicationService;
 import com.cchqsa.job_application_tracker.service.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import java.util.List;
 
 @Controller
 public class ApplicationController {
@@ -37,8 +42,19 @@ public class ApplicationController {
         application.setApplicationDate(dto.getApplicationDate());
         application.setUser(currUser);
 
+        application.setStatus(ApplicationStatus.APPLIED);
+
         applicationService.addApplication(application);
 
         return "redirect:/home";
+    }
+
+    @GetMapping("/applications")
+    public String listApplications(@AuthenticationPrincipal UserDetails userDetails, Model model) {
+        User user = userService.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        List<Application> applications = applicationService.getUserApplications(user);
+        model.addAttribute("applications", applications);
+        return "applications";
     }
 }

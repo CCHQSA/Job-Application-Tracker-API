@@ -93,14 +93,14 @@
         <section class="recent-applications">
           <h2>Recent Applications</h2>
           <div class="app-list">
-            <div class="app-item" th:each="application : ${applications}">
+            <div class="app-item" th:each="app : ${recentApplications}">
               <div class="app-info">
-                <h4 th:text="${application.position}">Position</h4>
-                <p><span th:text="${application.company}">Company</span> &bull; <span th:text="${application.location}">Location</span></p>
+                <h4 th:text="${app.position}">Position</h4>
+                <p><span th:text="${app.company}">Company</span> &bull; <span th:text="${app.location}">Location</span></p>
               </div>
               <span class="status-badge"
-                    th:classappend="${application.status.name() == 'APPLIED' ? 'status-applied' : 'status-interview'}"
-                    th:text="${application.status}">Status</span>
+                    th:classappend="${app.status?.name() == 'APPLIED' ? 'status-applied' : 'status-interview'}"
+                    th:text="${app.status}">Status</span>
             </div>
           </div>
         </section>
