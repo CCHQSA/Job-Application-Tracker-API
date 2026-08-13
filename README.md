@@ -1,119 +1,151 @@
-# Job Application Tracker
+# Job Application Tracker API
 
-A web application for managing job applications and interviews in one place.
+A Spring Boot application for managing job applications, companies, interviews, and the overall job search process.
 
-The main goal of the project is to make the job search process easier to organize. Instead of keeping application details, interview dates, and notes in different places, users can manage everything from one application.
+The project was built to practice developing a backend application with Spring Boot, Spring Security, JWT authentication, PostgreSQL, JPA/Hibernate, validation, and Docker.
 
 ## Features
 
-### Authentication
-
-- User registration and login
-- JWT-based authentication
-- HTTP-only authentication cookies
-- Secure password hashing
-- Protected user data
-
-### Job Applications
-
-Users can create and manage their job applications.
-
-Each application can contain the company, position, location, salary range, currency, application date, job URL, description, and personal notes.
-
-Applications can be moved through different stages:
-
-- Applied
-- Screening
-- Interview
-- Technical Interview
-- Offer
-- Rejected
-- Withdrawn
-
-Users can add, edit, delete, and update the status of their applications.
-
-### Interviews
-
-Each job application can have multiple interviews.
-
-Users can keep track of:
-
-- Interview type
-- Date and time
-- Interviewer
-- Location
-- Meeting URL
-- Notes
-- Interview status
-
-Interview statuses include:
-
-- Scheduled
-- Rescheduled
-- Completed
-- Cancelled
-
-Users can create, edit, delete, reschedule, and update interviews.
-
-### Dashboard
-
-The dashboard provides a quick overview of the current job search.
-
-It shows information such as:
-
-- Total applications
-- Active applications
-- Scheduled interviews
-- Offers received
-- Recent applications
-- Upcoming interviews
-
-### Statistics
-
-The statistics page gives a more detailed view of the user's job search.
-
-It includes:
-
-- Applications by status
-- Applications over time
-- Applications by location
-- Interview rate
-- Offer rate
-- Rejection rate
-- Interview statistics
-
-### Account Settings
-
-Users can manage their account from the settings page.
-
-- Update profile information
-- Change password
-- Delete account
-
-### Validation and Error Handling
-
-The application validates user input before processing it and uses global exception handling to provide consistent error responses.
-
-User ownership is also checked when working with applications and interviews so that users can only modify their own data.
+* User registration and authentication
+* JWT-based authentication
+* HTTP-only authentication cookies
+* Password hashing
+* User-specific data and ownership checks
+* Job application management
+* Company information management
+* Interview management
+* Application and interview statuses
+* Request validation
+* Global exception handling
+* Application statistics
+* PostgreSQL persistence
+* Docker and Docker Compose support
 
 ## Technologies
 
-- Java
-- Spring Boot
-- Spring MVC
-- Spring Data JPA
-- Spring Security
-- JWT
-- PostgreSQL
-- Thymeleaf
-- Jakarta Bean Validation
-- Lombok
-- Maven
-- HTML
-- CSS
+* Java
+* Spring Boot
+* Spring Security
+* JWT
+* Spring Data JPA
+* Hibernate
+* PostgreSQL
+* Maven
+* Docker
+* Docker Compose
 
-## Purpose
+## Project Structure
 
-This is a personal portfolio project built to practice Java and Spring Boot development.
+The application follows a layered architecture:
 
-It combines backend development, database management, authentication, validation, and frontend development in one project.
+```text
+src/main/java/
+└── ...
+    ├── controller
+    ├── service
+    ├── repository
+    ├── entity
+    ├── dto
+    ├── security
+    └── exception
+```
+
+Controllers handle HTTP requests, services contain application logic, repositories communicate with the database, and DTOs are used to transfer data between the API and clients.
+
+## Authentication
+
+Authentication is implemented using Spring Security and JWT.
+
+Passwords are stored using password hashing rather than plain text. After authentication, the JWT is stored in an HTTP-only cookie and is used to authenticate protected requests.
+
+User ownership checks are also applied to application data so that users cannot access or modify another user's records.
+
+## Database
+
+The application uses PostgreSQL with Spring Data JPA and Hibernate.
+
+The main domain objects include users, job applications, companies, and interviews, with relationships between them managed through JPA.
+
+## Running the Application
+
+### Using Docker Compose
+
+Clone the repository:
+
+```bash
+git clone https://github.com/CCHQSA/Job-Application-Tracker-API.git
+cd Job-Application-Tracker-API
+```
+
+Start the application:
+
+```bash
+docker compose up --build
+```
+
+The application and PostgreSQL database will be started as Docker containers.
+
+### Running with Maven
+
+Make sure Java and PostgreSQL are installed and configured.
+
+Then run:
+
+```bash
+./mvnw spring-boot:run
+```
+
+On Windows:
+
+```bash
+mvnw.cmd spring-boot:run
+```
+
+## Configuration
+
+Application-specific configuration should be provided through environment variables or the project's configuration files.
+
+Typical configuration includes:
+
+* PostgreSQL connection
+* Database credentials
+* JWT secret
+* Application port
+
+Do not commit real secrets or production credentials to the repository.
+
+## What I Practiced
+
+This project helped me practice:
+
+* Building REST APIs with Spring Boot
+* Layered application architecture
+* Spring Security
+* JWT authentication
+* Authentication cookies
+* Password hashing
+* JPA/Hibernate relationships
+* PostgreSQL
+* DTO-based application design
+* Validation
+* Exception handling
+* Docker and Docker Compose
+* Designing user-specific data access
+* Building backend features from requirements
+
+## Future Improvements
+
+Possible future improvements include:
+
+* More comprehensive automated tests
+* API documentation with OpenAPI/Swagger
+* CI/CD pipeline
+* Improved deployment configuration
+* Additional statistics and filtering
+* Email or notification integration
+
+## Author
+
+Mykola Lotockiy
+
+GitHub: https://github.com/CCHQSA
