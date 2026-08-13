@@ -1,74 +1,137 @@
-# Job Application Tracker API
+# Job Application Tracker
 
-A Spring Boot application for managing job applications, companies, interviews, and the overall job search process.
+**Live Demo:** https://job-application-tracker-api-jgp0.onrender.com/
 
-The project was built to practice developing a backend application with Spring Boot, Spring Security, JWT authentication, PostgreSQL, JPA/Hibernate, validation, and Docker.
+A web application for managing job applications and interviews in one place.
+
+The project was built to practice Java and Spring Boot development, including authentication, database persistence, validation, and web application development.
 
 ## Features
 
-* User registration and authentication
+### Authentication
+
+* User registration and login
 * JWT-based authentication
 * HTTP-only authentication cookies
 * Password hashing
-* User-specific data and ownership checks
-* Job application management
-* Company information management
-* Interview management
-* Application and interview statuses
-* Request validation
+* Protected user data
+
+### Job Applications
+
+Users can create and manage their job applications.
+
+Applications can contain:
+
+* Company
+* Position
+* Location
+* Salary range
+* Currency
+* Application date
+* Job URL
+* Description
+* Personal notes
+
+Application statuses include:
+
+* Applied
+* Screening
+* Interview
+* Technical Interview
+* Offer
+* Rejected
+* Withdrawn
+
+### Interviews
+
+Each application can have multiple interviews.
+
+Users can manage:
+
+* Interview type
+* Date and time
+* Interviewer
+* Location
+* Meeting URL
+* Notes
+* Interview status
+
+Interview statuses include:
+
+* Scheduled
+* Rescheduled
+* Completed
+* Cancelled
+
+### Dashboard
+
+The dashboard provides an overview of the current job search, including:
+
+* Total applications
+* Active applications
+* Scheduled interviews
+* Offers received
+* Recent applications
+* Upcoming interviews
+
+### Statistics
+
+The statistics page provides information about:
+
+* Applications by status
+* Applications over time
+* Applications by location
+* Interview rate
+* Offer rate
+* Rejection rate
+* Interview statistics
+
+### Account Settings
+
+Users can:
+
+* Update profile information
+* Change their password
+* Delete their account
+
+### Validation and Security
+
+* User input validation
 * Global exception handling
-* Application statistics
-* PostgreSQL persistence
-* Docker and Docker Compose support
+* User ownership checks for applications and interviews
 
 ## Technologies
 
 * Java
 * Spring Boot
+* Spring MVC
+* Spring Data JPA
 * Spring Security
 * JWT
-* Spring Data JPA
-* Hibernate
 * PostgreSQL
+* Thymeleaf
+* Jakarta Bean Validation
+* Lombok
 * Maven
-* Docker
-* Docker Compose
+* HTML
+* CSS
 
 ## Project Structure
 
-The application follows a layered architecture:
+The project is organized into separate components for handling different responsibilities:
 
 ```text
 src/main/java/
-└── ...
-    ├── controller
-    ├── service
-    ├── repository
-    ├── entity
-    ├── dto
-    ├── security
-    └── exception
+├── controller
+├── service
+├── repository
+├── entity
+├── dto
+├── security
+└── exception
 ```
 
-Controllers handle HTTP requests, services contain application logic, repositories communicate with the database, and DTOs are used to transfer data between the API and clients.
-
-## Authentication
-
-Authentication is implemented using Spring Security and JWT.
-
-Passwords are stored using password hashing rather than plain text. After authentication, the JWT is stored in an HTTP-only cookie and is used to authenticate protected requests.
-
-User ownership checks are also applied to application data so that users cannot access or modify another user's records.
-
-## Database
-
-The application uses PostgreSQL with Spring Data JPA and Hibernate.
-
-The main domain objects include users, job applications, companies, and interviews, with relationships between them managed through JPA.
-
 ## Running the Application
-
-### Using Docker Compose
 
 Clone the repository:
 
@@ -77,19 +140,13 @@ git clone https://github.com/CCHQSA/Job-Application-Tracker-API.git
 cd Job-Application-Tracker-API
 ```
 
-Start the application:
+The project includes Docker configuration for running the application.
 
 ```bash
 docker compose up --build
 ```
 
-The application and PostgreSQL database will be started as Docker containers.
-
-### Running with Maven
-
-Make sure Java and PostgreSQL are installed and configured.
-
-Then run:
+You can also run the application with Maven:
 
 ```bash
 ./mvnw spring-boot:run
@@ -101,48 +158,9 @@ On Windows:
 mvnw.cmd spring-boot:run
 ```
 
-## Configuration
+## Purpose
 
-Application-specific configuration should be provided through environment variables or the project's configuration files.
-
-Typical configuration includes:
-
-* PostgreSQL connection
-* Database credentials
-* JWT secret
-* Application port
-
-Do not commit real secrets or production credentials to the repository.
-
-## What I Practiced
-
-This project helped me practice:
-
-* Building REST APIs with Spring Boot
-* Layered application architecture
-* Spring Security
-* JWT authentication
-* Authentication cookies
-* Password hashing
-* JPA/Hibernate relationships
-* PostgreSQL
-* DTO-based application design
-* Validation
-* Exception handling
-* Docker and Docker Compose
-* Designing user-specific data access
-* Building backend features from requirements
-
-## Future Improvements
-
-Possible future improvements include:
-
-* More comprehensive automated tests
-* API documentation with OpenAPI/Swagger
-* CI/CD pipeline
-* Improved deployment configuration
-* Additional statistics and filtering
-* Email or notification integration
+This is a personal portfolio project created to practice Java and Spring Boot development and to build a more complete web application.
 
 ## Author
 
