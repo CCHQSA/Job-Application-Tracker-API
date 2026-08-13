@@ -73,7 +73,7 @@ public class SettingsController {
             return "redirect:/settings";
         }
 
-        if (newPass.length() < 6) {
+        if (newPass.length() < 8) {
             redirectAttributes.addFlashAttribute("passwordError", "Password must be at least 8 characters long.");
             return "redirect:/settings";
         }
