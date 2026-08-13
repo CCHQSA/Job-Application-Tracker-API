@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ApplicationRepository extends JpaRepository<Application,Long> {
+public interface ApplicationRepository extends JpaRepository<Application, Long> {
+
     List<Application> getApplicationsByUser(User user);
 
     Optional<Application> findByIdAndUser(Long id, User user);

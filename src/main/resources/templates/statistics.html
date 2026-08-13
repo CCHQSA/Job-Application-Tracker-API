@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Statistics - JobTrack</title>
   <link rel="stylesheet" th:href="@{/css/applications.css}">
+  <link rel="stylesheet" th:href="@{/css/statistics.css}">
 </head>
 <body class="dashboard-body">
 <aside class="sidebar">
@@ -36,14 +37,92 @@
     <h1>Statistics</h1>
   </header>
 
-  <div class="stats-overview">
-    <div class="stat-card">
-      <h3>Total Applications</h3>
-      <div class="stat-number color-primary" th:text="${totalApplications}">0</div>
+  <div class="stats-dashboard">
+    <div class="grid-4">
+      <div class="stat-card">
+        <h3>Applications</h3>
+        <div class="stat-number color-primary" th:text="${totalApplications}">0</div>
+      </div>
+      <div class="stat-card">
+        <h3>Active</h3>
+        <div class="stat-number color-info" th:text="${activeApplications.size()}">0</div>
+      </div>
+      <div class="stat-card">
+        <h3>Interviews</h3>
+        <div class="stat-number color-warning" th:text="${totalInterviews}">0</div>
+      </div>
+      <div class="stat-card">
+        <h3>Offers</h3>
+        <div class="stat-number color-success" th:text="${applicationStatus.get(T(com.cchqsa.job_application_tracker.enums.ApplicationStatus).OFFER) != null ? applicationStatus.get(T(com.cchqsa.job_application_tracker.enums.ApplicationStatus).OFFER) : 0}">0</div>
+      </div>
     </div>
-    <div class="stat-card">
-      <h3>Interviews</h3>
-      <div class="stat-number color-success" th:text="${totalInterviews}">0</div>
+
+    <div class="stats-section">
+      <h2 class="section-title">Application Status</h2>
+      <ul class="data-list">
+        <li class="data-item" th:each="entry : ${applicationStatus}">
+          <span class="data-label" th:text="${entry.key}">Status</span>
+          <span class="data-value" th:text="${entry.value}">0</span>
+        </li>
+        <li class="data-item" th:if="${applicationStatus.isEmpty()}">
+          <span class="data-label">No data available</span>
+          <span class="data-value">0</span>
+        </li>
+      </ul>
+    </div>
+
+    <div class="stats-section">
+      <h2 class="section-title">Success Rates</h2>
+      <div class="grid-3">
+        <div class="rate-card">
+          <div class="rate-title">Interview Rate</div>
+          <div class="rate-value" th:text="${interviewRate + '%'}">0.0%</div>
+        </div>
+        <div class="rate-card offer">
+          <div class="rate-title">Offer Rate</div>
+          <div class="rate-value" th:text="${offeredRate + '%'}">0.0%</div>
+        </div>
+        <div class="rate-card reject">
+          <div class="rate-title">Rejection Rate</div>
+          <div class="rate-value" th:text="${rejectedRate + '%'}">0.0%</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-section">
+      <h2 class="section-title">Interviews Overview</h2>
+      <div class="interview-metrics">
+        <div class="metric-badge">
+          <span>Scheduled:</span>
+          <span class="badge-count bg-scheduled" th:text="${scheduledInterviews}">0</span>
+        </div>
+        <div class="metric-badge">
+          <span>Completed:</span>
+          <span class="badge-count bg-completed" th:text="${completedInterviews}">0</span>
+        </div>
+        <div class="metric-badge">
+          <span>Rescheduled:</span>
+          <span class="badge-count bg-rescheduled" th:text="${rescheduledInterviews}">0</span>
+        </div>
+        <div class="metric-badge">
+          <span>Cancelled:</span>
+          <span class="badge-count bg-cancelled" th:text="${cancelledInterviews}">0</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-section">
+      <h2 class="section-title">Applications by Location</h2>
+      <ul class="data-list">
+        <li class="data-item" th:each="entry : ${applicationLocations}">
+          <span class="data-label" th:text="${entry.key != null && !entry.key.isEmpty() ? entry.key : 'Not Specified'}">Location</span>
+          <span class="data-value" th:text="${entry.value}">0</span>
+        </li>
+        <li class="data-item" th:if="${applicationLocations.isEmpty()}">
+          <span class="data-label">No data available</span>
+          <span class="data-value">0</span>
+        </li>
+      </ul>
     </div>
   </div>
 </main>

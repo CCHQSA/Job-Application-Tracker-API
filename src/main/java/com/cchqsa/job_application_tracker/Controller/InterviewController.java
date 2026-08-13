@@ -12,14 +12,14 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -186,6 +186,62 @@ public class InterviewController {
         redirectAttributes.addFlashAttribute("success", "Interview deleted successfully.");
         return "redirect:/interviews";
     }
+
+    @PostMapping("/interview/change/{id}")
+    public String changeInterviewStatus(@AuthenticationPrincipal UserDetails userDetails,
+                                        @PathVariable("id") Long id,
+                                        @RequestParam("status") InterviewStatus status
+                                        ){
+        Interview interview = interviewService.findById(id).get();
+        interview.setStatus(status);
+        interviewService.save(interview);
+        return "redirect:/interviews";
+    }
+
+    @PostMapping("/interview/reschedule/{id}")
+    public String rescheduleInterview(@AuthenticationPrincipal UserDetails userDetails,
+                                      @PathVariable("id") Long id,
+                                      @RequestParam("newDateTime") LocalDateTime date){
+        Interview interview = interviewService.findById(id).get();
+        interview.setDateTime(date);
+        interviewService.save(interview);
+        return "redirect:/interviews";
+    }
+
+    @GetMapping("/interviews/edit/{id}")
+    public String showEditForm(@PathVariable("id") Long id, Model model) {
+        Interview interview = interviewService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Interview not found"));
+
+        model.addAttribute("interview", interview);
+        model.addAttribute("activeTab", "interviews");
+        return "interview-edit";
+    }
+
+    @PostMapping("/interviews/edit/{id}")
+    public String processEdit(@PathVariable("id") Long id,
+                              @RequestParam("type") com.cchqsa.job_application_tracker.enums.InterviewType type,
+                              @RequestParam("dateTime") @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) java.time.LocalDateTime dateTime,
+                              @RequestParam(value = "meetingUrl", required = false) String meetingUrl,
+                              @RequestParam(value = "notes", required = false) String notes,
+                              RedirectAttributes redirectAttributes) {
+
+        Interview existingInterview = interviewService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Interview not found"));
+
+        existingInterview.setType(type);
+        existingInterview.setDateTime(dateTime);
+        existingInterview.setMeetingUrl(meetingUrl);
+        existingInterview.setNotes(notes);
+
+        interviewService.saveInterview(existingInterview, existingInterview.getApplication());
+
+        redirectAttributes.addFlashAttribute("success", "Interview updated successfully.");
+        return "redirect:/interviews";
+    }
+
+
+
 
     private void addInterviewModel(Model model, Application application) {
         model.addAttribute("application", application);

@@ -39,6 +39,7 @@ public class StatisticsController {
         model.addAttribute("scheduledInterviews", stats.scheduledInterviews());
         model.addAttribute("completedInterviews", stats.completedInterviews());
         model.addAttribute("rescheduledInterviews", stats.rescheduledInterviews());
+        model.addAttribute("cancelledInterviews", stats.cancelledInterviews());
         model.addAttribute("applicationLocations", stats.applicationLocations());
 
         return "statistics";

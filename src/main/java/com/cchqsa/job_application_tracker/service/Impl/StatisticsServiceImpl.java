@@ -63,12 +63,13 @@ public class StatisticsServiceImpl implements StatisticsService {
         long scheduled = countInterviewsByStatus(interviews, InterviewStatus.SCHEDULED);
         long completed = countInterviewsByStatus(interviews, InterviewStatus.COMPLETED);
         long rescheduled = countInterviewsByStatus(interviews, InterviewStatus.RESCHEDULED);
+        long cancelled = countInterviewsByStatus(interviews, InterviewStatus.CANCELLED);
 
         Map<String, Long> sortedLocationCounts = filterAndSortLocationCounts(applications);
 
         return new StatisticsDto(
                 totalApps, interviews.size(), activeApplications, sortedStatusCounts,
-                interviewRate, offeredRate, rejectedRate, scheduled, completed, rescheduled, sortedLocationCounts
+                interviewRate, offeredRate, rejectedRate, scheduled, completed, rescheduled, cancelled, sortedLocationCounts
         );
     }
 

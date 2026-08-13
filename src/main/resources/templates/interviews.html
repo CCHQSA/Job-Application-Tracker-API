@@ -35,6 +35,29 @@
           border-color: var(--primary-color);
           box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
       }
+      .action-buttons-vertical {
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+      }
+      .btn-edit-action {
+          display: inline-block;
+          background-color: #f1f5f9;
+          color: #334155;
+          border: 1px solid #cbd5e1;
+          padding: 0.4rem 0.8rem;
+          border-radius: 6px;
+          font-size: 0.75rem;
+          font-weight: 600;
+          text-decoration: none;
+          text-align: center;
+          cursor: pointer;
+          transition: background-color 0.2s, color 0.2s;
+      }
+      .btn-edit-action:hover {
+          background-color: #e2e8f0;
+          color: #0f172a;
+      }
   </style>
 </head>
 <body>
@@ -98,19 +121,55 @@
         <div th:unless="${#lists.isEmpty(allInterviews)}" class="interview-list">
           <div th:each="interview : ${allInterviews}" class="interview-item">
             <div class="interview-info">
-              <h4 th:text="${interview.application.company}">Google</h4>
-              <p th:text="${interview.application.position}">Java Junior Software Developer</p>
+              <h4 th:text="${interview.application.company}"></h4>
+              <p th:text="${interview.application.position}"></p>
             </div>
             <div class="app-actions">
-              <span class="status-badge badge-interview" th:text="${interview.type}">Technical Interview</span>
-              <span class="status-badge badge-time" th:text="${#temporals.format(interview.dateTime, 'MMM dd, HH:mm')}">Aug 18, 16:00</span>
-              <form th:action="@{/interviews/delete}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this interview?');">
-                <input type="hidden" name="interviewId" th:value="${interview.id}"/>
-                <button type="submit" class="btn-delete-action">Delete</button>
+
+              <form th:action="@{/interview/change/{id}(id=${interview.id})}" method="POST" style="display:inline;">
+                <input type="hidden" name="_method" value="CHANGE" />
+                <div class="status-split-group">
+                  <button type="submit" class="status-change-btn">Change</button>
+                  <select name="status"
+                          class="status-select-input"
+                          th:classappend="${
+                    interview.status?.name() == 'COMPLETED' ? 'badge-offer' :
+                    (interview.status?.name() == 'CANCELLED' ? 'badge-rejected' : 'badge-interview')
+                  }">
+                    <option value="SCHEDULED" th:selected="${interview.status?.name() == 'SCHEDULED'}">SCHEDULED</option>
+                    <option value="COMPLETED" th:selected="${interview.status?.name() == 'COMPLETED'}">COMPLETED</option>
+                    <option value="CANCELLED" th:selected="${interview.status?.name() == 'CANCELLED'}">CANCELLED</option>
+                  </select>
+                </div>
               </form>
+
+              <span class="status-badge badge-interview" th:text="${interview.type}"></span>
+
+
+              <div class="reschedule-group" style="display: inline-block; vertical-align: middle;">
+                <span class="status-badge badge-time" th:text="${#temporals.format(interview.dateTime, 'MMM dd, HH:mm')}"></span>
+
+                <form th:action="@{/interview/reschedule/{id}(id=${interview.id})}" method="POST" style="display: inline-flex; align-items: center; gap: 5px; margin-left: 5px;">
+                  <input type="datetime-local"
+                         name="newDateTime"
+                         class="reschedule-date-input"
+                         required
+                         th:value="${#temporals.formatISO(interview.dateTime)}"/>
+                  <button type="submit" class="status-change-btn btn-reschedule">Reschedule</button>
+                </form>
+              </div>
+
+              <div class="action-buttons-vertical">
+                <form th:action="@{/interviews/delete}" method="POST" style="display: inline;" onsubmit="return confirm('Are you sure you want to delete this interview?');">
+                  <input type="hidden" name="interviewId" th:value="${interview.id}"/>
+                  <button type="submit" class="btn-delete-action">Delete</button>
+                </form>
+                <a th:href="@{/interviews/edit/{id}(id=${interview.id})}" class="btn-edit-action">Edit</a>
+              </div>
             </div>
           </div>
         </div>
+
       </section>
 
       <section th:if="${hasApplications}" class="quick-select-panel">

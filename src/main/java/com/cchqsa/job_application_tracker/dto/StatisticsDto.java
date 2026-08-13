@@ -16,5 +16,6 @@ public record StatisticsDto(
         long scheduledInterviews,
         long completedInterviews,
         long rescheduledInterviews,
+        long cancelledInterviews,
         Map<String, Long> applicationLocations
 ) {}
