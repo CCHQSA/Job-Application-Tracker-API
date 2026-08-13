@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Interview - JobTrack</title>
+  <link rel="stylesheet" th:href="@{/css/applications.css}">
+  <link rel="stylesheet" th:href="@{/css/interviews.css}">
+  <link rel="stylesheet" th:href="@{/css/interview-edit.css}">
+</head>
+<body class="dashboard-body">
+
+<aside class="sidebar">
+  <div class="sidebar-brand">JobTrack</div>
+  <nav class="sidebar-menu">
+    <a th:href="@{/home}" class="menu-item">Dashboard</a>
+    <a th:href="@{/applications}" class="menu-item">Applications</a>
+    <a th:href="@{/interviews}" class="menu-item active">Interviews</a>
+    <a th:href="@{/statistics}" class="menu-item">Statistics</a>
+    <a th:href="@{/settings}" class="menu-item">Settings</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a th:href="@{/logout}" class="logout-link">Log Out</a>
+  </div>
+</aside>
+
+<main class="dashboard-container">
+  <header class="dashboard-header">
+    <h1>Edit Interview Details</h1>
+    <p>Update information regarding your schedule and meeting criteria</p>
+  </header>
+
+  <div class="form-container">
+    <div class="company-preview" th:text="${interview.application.company} + ' — ' + ${interview.application.position}"></div>
+
+    <form th:action="@{/interviews/edit/{id}(id=${interview.id})}" method="POST">
+
+      <div class="form-group">
+        <label for="type">Interview Type / Stage</label>
+        <select id="type" name="type" class="form-control" required>
+          <option value="HR" th:selected="${interview.type?.name() == 'HR'}">HR Interview</option>
+          <option value="TECHNICAL" th:selected="${interview.type?.name() == 'TECHNICAL'}">Technical Interview</option>
+          <option value="FINAL" th:selected="${interview.type?.name() == 'FINAL'}">Final Interview</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="dateTime">Date and Time</label>
+        <input type="datetime-local"
+               id="dateTime"
+               name="dateTime"
+               class="form-control"
+               required
+               th:value="${#temporals.formatISO(interview.dateTime)}" />
+      </div>
+
+      <div class="form-group">
+        <label for="meetingUrl">Meeting Link (Optional)</label>
+        <input type="url"
+               id="meetingUrl"
+               name="meetingUrl"
+               class="form-control"
+               placeholder="https://zoom.us..."
+               th:value="${interview.meetingUrl}" />
+      </div>
+
+      <div class="form-group">
+        <label for="notes">Notes / Preparation Tasks</label>
+        <textarea id="notes"
+                  name="notes"
+                  class="form-control"
+                  rows="4"
+                  placeholder="Questions to ask, topics to review..."
+                  th:text="${interview.notes}"></textarea>
+      </div>
+
+      <div class="form-actions-row">
+        <a th:href="@{/interviews}" class="btn-cancel">Cancel</a>
+        <button type="submit" class="btn-add-action" style="border: none; cursor: pointer;">Save Changes</button>
+      </div>
+
+    </form>
+  </div>
+</main>
+
+</body>
+</html>

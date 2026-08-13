@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account - JobTrack</title>
+  <link rel="stylesheet" th:href="@{/css/general.css}">
+  <link rel="stylesheet" th:href="@{/css/register.css}">
+</head>
+<body class="auth-body">
+
+<div class="auth-container">
+  <div class="auth-header">
+    <a th:href="@{/general}" class="auth-logo">JobTrack</a>
+    <h1>Create your account</h1>
+    <p class="auth-subtitle">Start tracking your job applications today</p>
+  </div>
+
+  <form th:action="@{/register}" method="POST" class="auth-form">
+
+    <div class="form-row">
+      <div class="form-group">
+        <label for="name">First Name</label>
+        <input type="text" id="name" name="name" required placeholder="John">
+      </div>
+
+      <div class="form-group">
+        <label for="lastName">Last Name</label>
+        <input type="text" id="lastName" name="lastName" required placeholder="Doe">
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="email">Email Address</label>
+      <input type="email" id="email" name="email" required placeholder="john.doe@example.com">
+    </div>
+
+    <div class="form-group">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required placeholder="••••••••">
+      <small class="form-hint">Must be at least 8 characters with 1 uppercase, 1 lowercase, 1 digit, and 1 special sign.</small>
+    </div>
+
+    <button type="submit" class="auth-button">Sign Up</button>
+  </form>
+
+  <div class="auth-footer">
+    <p>Already have an account? <a th:href="@{/login}">Log in</a></p>
+  </div>
+</div>
+
+</body>
+</html>

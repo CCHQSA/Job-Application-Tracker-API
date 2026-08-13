@@ -33,8 +33,7 @@ public class ApplicationController {
 
     @GetMapping("/applications")
     public String listApplications(@AuthenticationPrincipal UserDetails userDetails, Model model) {
-        User user = userService.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = getCurrentUser(userDetails);
         List<Application> applications = applicationService.getUserApplications(user);
         List<Interview> totalInterviews = interviewService.findByApplicationIn(applications);
         List<Application> pendingApplications = applications.stream()
@@ -68,7 +67,8 @@ public class ApplicationController {
     public String deleteApplication(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long id) {
-        applicationService.deleteByIdAndUser(id, userService.findByEmail(userDetails.getUsername()).get());
+        User user = getCurrentUser(userDetails);
+        applicationService.deleteByIdAndUser(id, user);
         return "redirect:/applications";
     }
 
@@ -78,9 +78,8 @@ public class ApplicationController {
             @PathVariable("id") Long id,
             @RequestParam("status") ApplicationStatus status
     ){
-        User user = userService.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        Application application = applicationService.findApplicationById(id).get();
+        User user = getCurrentUser(userDetails);
+        Application application = getUserApplication(id, user);
         LocalDateTime now = LocalDateTime.now();
         application.setUpdatedAt(now);
         application.setStatus(status);
@@ -93,16 +92,11 @@ public class ApplicationController {
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable("id") Long id,
             Model model) {
-        User user = userService.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        Application application = applicationService.findApplicationById(id)
-                .orElseThrow(() -> new RuntimeException("Application not found"));
-
-        if (!application.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("Application not found");
-        }
+        User user = getCurrentUser(userDetails);
+        Application application = getUserApplication(id, user);
 
         model.addAttribute("activeTab", "applications");
+        model.addAttribute("application", application);
         model.addAttribute("id", application.getId());
         model.addAttribute("company", application.getCompany());
         model.addAttribute("position", application.getPosition());
@@ -125,14 +119,8 @@ public class ApplicationController {
             @PathVariable("id") Long id,
             @ModelAttribute ApplicationRequestDto dto,
             @RequestParam("status") ApplicationStatus status) {
-        User user = userService.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-        Application application = applicationService.findApplicationById(id)
-                .orElseThrow(() -> new RuntimeException("Application not found"));
-
-        if (!application.getUser().getId().equals(user.getId())) {
-            throw new RuntimeException("Application not found");
-        }
+        User user = getCurrentUser(userDetails);
+        Application application = getUserApplication(id, user);
 
         application.setCompany(dto.getCompany());
         application.setPosition(dto.getPosition());
@@ -152,8 +140,7 @@ public class ApplicationController {
     }
 
     private void saveApplicationFromDto(UserDetails userDetails, ApplicationRequestDto dto) {
-        User currUser = userService.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User currUser = getCurrentUser(userDetails);
 
         Application application = new Application();
         application.setCompany(dto.getCompany());
@@ -169,5 +156,21 @@ public class ApplicationController {
         application.setDescription(dto.getDescription());
         application.setNotes(dto.getNotes());
         applicationService.addApplication(application);
+    }
+
+    private User getCurrentUser(UserDetails userDetails) {
+        return userService.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    private Application getUserApplication(Long id, User user) {
+        Application application = applicationService.findApplicationById(id)
+                .orElseThrow(() -> new RuntimeException("Application not found"));
+
+        if (!application.getUser().getId().equals(user.getId())) {
+            throw new RuntimeException("Application not found");
+        }
+
+        return application;
     }
 }

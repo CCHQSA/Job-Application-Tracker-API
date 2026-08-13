@@ -51,19 +51,22 @@ public class StatisticsServiceImpl implements StatisticsService {
         double rejectedRate = 0.0;
 
         if (totalApps > 0) {
-            long interviewApps = applications.stream().filter(app -> app.getInterviews() != null).count();
+            long interviewApps = interviews.stream()
+                    .map(interview -> interview.getApplication().getId())
+                    .distinct()
+                    .count();
             long offeredApps = applications.stream().filter(app -> app.getStatus() == ApplicationStatus.OFFER).count();
             long rejectedApps = applications.stream().filter(app -> app.getStatus() == ApplicationStatus.REJECTED).count();
 
-            interviewRate = roundToOnesDecimal(((double) interviewApps / totalApps) * 100);
-            offeredRate = roundToOnesDecimal(((double) offeredApps / totalApps) * 100);
-            rejectedRate = roundToOnesDecimal(((double) rejectedApps / totalApps) * 100);
+            interviewRate = roundToOneDecimal(((double) interviewApps / totalApps) * 100);
+            offeredRate = roundToOneDecimal(((double) offeredApps / totalApps) * 100);
+            rejectedRate = roundToOneDecimal(((double) rejectedApps / totalApps) * 100);
         }
 
-        long scheduled = countInterviewsByStatus(interviews, InterviewStatus.SCHEDULED);
-        long completed = countInterviewsByStatus(interviews, InterviewStatus.COMPLETED);
-        long rescheduled = countInterviewsByStatus(interviews, InterviewStatus.RESCHEDULED);
-        long cancelled = countInterviewsByStatus(interviews, InterviewStatus.CANCELLED);
+        long scheduled = countByInterviewStatus(interviews, InterviewStatus.SCHEDULED);
+        long completed = countByInterviewStatus(interviews, InterviewStatus.COMPLETED);
+        long rescheduled = countByInterviewStatus(interviews, InterviewStatus.RESCHEDULED);
+        long cancelled = countByInterviewStatus(interviews, InterviewStatus.CANCELLED);
 
         Map<String, Long> sortedLocationCounts = filterAndSortLocationCounts(applications);
 
@@ -106,5 +109,19 @@ public class StatisticsServiceImpl implements StatisticsService {
                 .entrySet().stream()
                 .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (v1, v2) -> v1, LinkedHashMap::new));
+    }
+
+    private double roundToOneDecimal(double value) {
+        return Math.round(value * 10.0) / 10.0;
+    }
+
+    private long countByInterviewStatus(List<Interview> interviews, InterviewStatus status) {
+        if (interviews == null) {
+            return 0;
+        }
+
+        return interviews.stream()
+                .filter(interview -> interview.getStatus() == status)
+                .count();
     }
 }

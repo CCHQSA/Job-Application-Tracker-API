@@ -1,0 +1,293 @@
+:root {
+    --bg-light: #f8fafc;
+    --bg-white: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --primary-color: #2563eb;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+.dashboard-body {
+    background-color: var(--bg-light);
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 260px;
+    background-color: #0f172a;
+    color: #94a3b8;
+    display: flex;
+    flex-direction: column;
+    padding: 2rem 1.5rem;
+    position: fixed;
+    height: 100vh;
+}
+
+.sidebar-brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--bg-white);
+    margin-bottom: 3rem;
+    letter-spacing: -0.05em;
+}
+
+.sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.menu-item {
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.menu-item:hover, .menu-item.active {
+    background-color: #1e293b;
+    color: var(--bg-white);
+}
+
+.sidebar-footer {
+    border-top: 1px solid #1e293b;
+    padding-top: 1.5rem;
+}
+
+.logout-link:hover {
+    color: #ef4444;
+}
+
+.dashboard-container {
+    margin-left: 260px;
+    flex: 1;
+    padding: 2.5rem;
+}
+
+.dashboard-header {
+    margin-bottom: 2.5rem;
+}
+
+.dashboard-header h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.25rem;
+}
+
+.dashboard-header p {
+    color: var(--text-muted);
+}
+
+.stats-overview {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.stat-card {
+    background-color: var(--bg-white);
+    padding: 1.5rem;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+}
+
+.stat-card h3 {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.stat-number {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.color-primary { color: var(--primary-color); }
+.color-success { color: #10b981; }
+
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 2rem;
+}
+
+.grid-column {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+section {
+    background-color: var(--bg-white);
+    padding: 2rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-color);
+}
+
+section h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.01em;
+}
+
+.quick-add-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.quick-add-form .form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.375rem;
+}
+
+.quick-add-form label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-main);
+}
+
+.quick-add-form input,
+.quick-add-form select {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    font-size: 0.95rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--bg-white);
+    color: var(--text-main);
+    outline: none;
+    height: 44px;
+    box-sizing: border-box;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.quick-add-form select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://w3.org' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+    background-repeat: no-repeat;
+    background-position: right 1rem center;
+    background-size: 1rem;
+    padding-right: 2.5rem;
+    cursor: pointer;
+}
+
+.quick-add-form input:focus,
+.quick-add-form select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.quick-add-form input[type="number"]::-webkit-outer-spin-button,
+.quick-add-form input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.quick-add-form input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+.quick-add-form .form-row {
+    display: flex;
+    gap: 1rem;
+    width: 100%;
+}
+
+.quick-add-form .form-row .form-group {
+    flex: 2;
+    min-width: 0;
+}
+
+.quick-add-form .form-row .form-group:has(#currency) {
+    flex: 1;
+}
+
+.btn-full {
+    width: 100%;
+    cursor: pointer;
+    border: none;
+    padding: 0.8rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    margin-top: 0.5rem;
+    background-color: var(--primary-color);
+    color: var(--bg-white);
+}
+
+.app-list, .interview-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.app-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-light);
+}
+
+.app-info h4 {
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.app-info p {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.status-applied { background-color: #dbeafe; color: #1e40af; }
+.status-interview { background-color: #fef3c7; color: #92400e; }
+
+@media (max-width: 1024px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar { width: 70px; padding: 2rem 0.5rem; align-items: center; }
+    .sidebar-brand, .menu-item { font-size: 0; padding: 0.75rem; text-align: center; }
+    .sidebar-brand::first-letter { font-size: 1.5rem; }
+    .menu-item::before { content: "■"; font-size: 1.25rem; }
+    .dashboard-container { margin-left: 70px; padding: 1.5rem; }
+    .stats-overview { grid-template-columns: 1fr; }
+
+    .quick-add-form .form-row {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}

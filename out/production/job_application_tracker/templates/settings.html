@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings - JobTrack</title>
+  <link rel="stylesheet" th:href="@{/css/applications.css}">
+  <link rel="stylesheet" th:href="@{/css/settings.css}">
+</head>
+<body class="dashboard-body">
+
+<aside class="sidebar">
+  <div class="sidebar-brand">JobTrack</div>
+  <nav class="sidebar-menu">
+    <a th:href="@{/home}"
+       class="menu-item"
+       th:classappend="${activeTab == 'home' ? 'active' : ''}">Dashboard</a>
+    <a th:href="@{/applications}"
+       class="menu-item"
+       th:classappend="${activeTab == 'applications' ? 'active' : ''}">Applications</a>
+    <a th:href="@{/interviews}"
+       class="menu-item"
+       th:classappend="${activeTab == 'interviews' ? 'active' : ''}">Interviews</a>
+    <a th:href="@{/statistics}"
+       class="menu-item"
+       th:classappend="${activeTab == 'statistics' ? 'active' : ''}">Statistics</a>
+    <a th:href="@{/settings}"
+       class="menu-item"
+       th:classappend="${activeTab == 'settings' ? 'active' : ''}">Settings</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a th:href="@{/logout}" class="logout-link">Log Out</a>
+  </div>
+</aside>
+
+<main class="dashboard-container">
+  <header class="dashboard-header">
+    <h1>Settings</h1>
+    <p>Manage your account preferences, password security, and personal data</p>
+  </header>
+
+  <div class="settings-layout">
+
+    <section class="settings-card">
+      <h2>Profile</h2>
+
+      <div th:if="${profileSuccess}" class="success-message" style="margin-bottom: 1.5rem;">
+        <svg class="success-icon" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+        </svg>
+        <span th:text="${profileSuccess}"></span>
+      </div>
+
+      <form th:action="@{/settings/profile}" method="POST">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" class="form-control" th:value="${user?.name}" required />
+        </div>
+        <div class="form-group">
+          <label for="lastName">Last Name</label>
+          <input type="text" id="lastName" name="lastName" class="form-control" th:value="${user?.lastName}" required />
+        </div>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" class="form-control" th:value="${user?.email}" readonly />
+        </div>
+        <button type="submit" class="btn-save">Save Changes</button>
+      </form>
+    </section>
+
+    <section class="settings-card">
+      <h2>Change Password</h2>
+
+      <div th:if="${passwordSuccess}" class="success-message" style="margin-bottom: 1.5rem;">
+        <svg class="success-icon" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+        </svg>
+        <span th:text="${passwordSuccess}"></span>
+      </div>
+
+      <div th:if="${passwordError}" class="error-message" th:text="${passwordError}"></div>
+
+      <form th:action="@{/settings/password}" method="POST">
+        <div class="form-group">
+          <label for="currentPassword">Current Password</label>
+          <input type="password" id="currentPassword" name="currentPassword" class="form-control" required placeholder="********" />
+        </div>
+        <div class="form-group">
+          <label for="newPassword">New Password</label>
+          <input type="password" id="newPassword" name="newPassword" class="form-control" required placeholder="********" />
+        </div>
+        <div class="form-group">
+          <label for="confirmPassword">Confirm New Password</label>
+          <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required placeholder="********" />
+        </div>
+        <button type="submit" class="btn-save">Change Password</button>
+      </form>
+    </section>
+
+    <section class="settings-card danger-zone">
+      <h2>Danger Zone</h2>
+      <div class="danger-wrapper">
+        <div class="danger-info">
+          <h3>Delete Account</h3>
+          <p>Deleting your account will permanently remove your applications and interviews.</p>
+        </div>
+        <form th:action="@{/settings/delete-account}" method="POST" onsubmit="return confirm('Are you absolutely sure you want to permanently delete your account? This action cannot be undone.');">
+          <button type="submit" class="btn-danger">Delete Account</button>
+        </form>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+</body>
+</html>

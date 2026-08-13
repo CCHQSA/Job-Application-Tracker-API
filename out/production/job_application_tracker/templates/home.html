@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - JobTrack</title>
+  <link rel="stylesheet" th:href="@{/css/general.css}">
+  <link rel="stylesheet" th:href="@{/css/home.css}">
+</head>
+<body class="dashboard-body">
+
+<aside class="sidebar">
+  <div class="sidebar-brand">JobTrack</div>
+  <nav class="sidebar-menu">
+    <a th:href="@{/home}"
+       class="menu-item"
+       th:classappend="${activeTab == 'home' ? 'active' : ''}">Dashboard</a>
+    <a th:href="@{/applications}"
+       class="menu-item"
+       th:classappend="${activeTab == 'applications' ? 'active' : ''}">Applications</a>
+    <a th:href="@{/interviews}"
+       class="menu-item"
+       th:classappend="${activeTab == 'interviews' ? 'active' : ''}">Interviews</a>
+    <a th:href="@{/statistics}"
+       class="menu-item"
+       th:classappend="${activeTab == 'statistics' ? 'active' : ''}">Statistics</a>
+    <a href="/settings"
+       class="menu-item"
+       th:classappend="${activeTab == 'settings' ? 'active' : ''}">Settings</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a th:href="@{/logout}" class="logout-link">Log Out</a>
+  </div>
+</aside>
+
+
+<div class="dashboard-container">
+
+  <header class="dashboard-header">
+    <div class="welcome-text">
+      <h1>Welcome back, <span th:text="${user.name}">User</span>!</h1>
+      <p>Here is what's happening with your job search today.</p>
+    </div>
+  </header>
+
+  <main class="dashboard-content">
+
+    <section class="stats-overview">
+      <div class="stat-card">
+        <h3>Total Applications</h3>
+        <p class="stat-number" th:text="${totalApplications}">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Interviews Scheduled</h3>
+        <p class="stat-number color-primary" th:text="${totalInterviews != null ? totalInterviews : 0}">0</p>
+      </div>
+      <div class="stat-card">
+        <h3>Offers Received</h3>
+        <p class="stat-number color-success" th:text="${offersReceived != null ? offersReceived : 0}">0</p>
+      </div>
+    </section>
+
+    <div class="dashboard-grid">
+
+      <div class="grid-column">
+
+        <section class="quick-add-section">
+          <h2>Quick Add Application</h2>
+
+          <form th:action="@{/applications}" method="POST" class="quick-add-form">
+
+            <input type="hidden" name="sourcePage" value="home">
+
+            <div class="form-group">
+              <label for="company">Company</label>
+              <input type="text" id="company" name="company" required placeholder="Google">
+            </div>
+
+            <div class="form-group">
+              <label for="position">Position</label>
+              <input type="text" id="position" name="position" required placeholder="Software Engineer">
+            </div>
+
+            <div class="form-group">
+              <label for="location">Location</label>
+              <input type="text" id="location" name="location" required placeholder="Kyiv or Remote">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="salaryFrom">Salary From</label>
+                <input type="number" id="salaryFrom" name="salaryFrom" required placeholder="3000">
+              </div>
+              <div class="form-group">
+                <label for="salaryTo">Salary To</label>
+                <input type="number" id="salaryTo" name="salaryTo" required placeholder="4500">
+              </div>
+              <div class="form-group">
+                <label for="currency">Currency</label>
+                <select id="currency" name="currency" required>
+                  <option value="USD" selected>USD ($)</option>
+                  <option value="EUR">EUR (€)</option>
+                  <option value="GBP">GBP (£)</option>
+                  <option value="JPY">JPY (¥)</option>
+                  <option value="AUD">AUD ($)</option>
+                  <option value="UAH">UAH (₴)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="applicationDate">Application Date</label>
+              <input type="date" id="applicationDate" name="applicationDate" required th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+            </div>
+
+            <button type="submit" class="btn-full">Add Application</button>
+          </form>
+        </section>
+
+        <section class="recent-applications">
+          <h2>Recent Applications</h2>
+          <div class="app-list">
+            <div class="app-item" th:each="app : ${recentApplications}">
+              <div class="app-info">
+                <h4 th:text="${app.position}">Position</h4>
+                <p><span th:text="${app.company}">Company</span> &bull; <span th:text="${app.location}">Location</span></p>
+              </div>
+              <span class="status-badge"
+                    th:classappend="${app.status?.name() == 'INTERVIEW' ? 'status-interview' : 'status-applied'}"
+                    th:text="${app.status}">Status</span>
+            </div>
+            <div th:if="${#lists.isEmpty(recentApplications)}" class="app-info">
+              <p>No recent applications found.</p>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <div class="grid-column">
+
+        <section class="upcoming-interviews">
+          <h2>Upcoming Interviews</h2>
+          <div class="interview-list">
+
+            <div class="app-item" th:each="interview : ${upcomingInterviews}">
+              <div class="app-info">
+                <h4 th:text="${interview.application.position}">Position</h4>
+                <p>
+                  <strong th:text="${interview.application.company}">Company</strong> &bull;
+                  <span th:text="${#temporals.format(interview.dateTime, 'yyyy-MM-dd HH:mm')}">Date & Time</span>
+                </p>
+                <p style="font-size: 0.8rem; color: var(--text-muted);">
+                  Interviewer: <span th:text="${interview.interviewer}">Name</span>
+                  <span th:if="${interview.type != null}">(&nbsp;<span th:text="${interview.type}">TYPE</span>&nbsp;)</span>
+                </p>
+              </div>
+
+              <span class="status-badge status-interview" th:text="${interview.status}">Status</span>
+            </div>
+            <div th:if="${#lists.isEmpty(upcomingInterviews)}" class="app-info">
+              <p style="color: var(--text-muted); font-size: 0.875rem;">No interviews scheduled yet.</p>
+            </div>
+
+          </div>
+        </section>
+
+
+      </div>
+
+    </div>
+
+  </main>
+</div>
+
+</body>
+</html>

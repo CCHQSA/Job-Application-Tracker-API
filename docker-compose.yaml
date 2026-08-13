@@ -1,0 +1,39 @@
+services:
+  postgres-db:
+    image: postgres:18-alpine
+    container_name: job_tracker_db
+    environment:
+      POSTGRES_DB: jobApplicationDB
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Pass22042010
+    ports:
+      - "2204:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d jobApplicationDB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  spring-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: job_tracker_app
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: job_application_tracker
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-db:5432/jobApplicationDB
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: Pass22042010
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+      SPRING_JPA_SHOW_SQL: "true"
+      JWT_SECRET: YTMwYmUxOTc4NGRhZjYyNWMzMGJlMTk3ODRkYWY2MjVzZWNyZXQ0NTY3ODkwMTIzNDU2Nzg5MDEyMzQ1Njc4OQ==
+    ports:
+      - "8082:8080"
+
+volumes:
+  postgres-data:

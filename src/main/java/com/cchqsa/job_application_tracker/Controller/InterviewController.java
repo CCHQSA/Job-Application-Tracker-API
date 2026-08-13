@@ -15,11 +15,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,8 +39,7 @@ public class InterviewController {
             @AuthenticationPrincipal UserDetails userDetails,
             Model model) {
 
-        User user = userService.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = getCurrentUser(userDetails);
 
         List<Application> applications = applicationService.getUserApplications(user);
         List<Interview> allInterviews = interviewService.findAllByApplicationIn(applications);
@@ -78,8 +75,7 @@ public class InterviewController {
             @AuthenticationPrincipal UserDetails userDetails,
             Model model) {
 
-        User user = userService.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = getCurrentUser(userDetails);
         List<Application> applications = applicationService.getUserApplications(user);
 
         Interview interview = new Interview();
@@ -90,9 +86,7 @@ public class InterviewController {
         if (applicationId != null) {
             Application application = applicationService.findApplicationById(applicationId)
                     .orElseThrow(() -> new IllegalArgumentException("Invalid application ID: " + applicationId));
-            if (!application.getUser().getId().equals(user.getId())) {
-                throw new IllegalArgumentException("Invalid application ID: " + applicationId);
-            }
+            requireApplicationOwner(application, user);
             model.addAttribute("application", application);
             model.addAttribute("applicationCompany", application.getCompany());
             model.addAttribute("applicationPosition", application.getPosition());
@@ -114,8 +108,7 @@ public class InterviewController {
                                 Model model,
                                 RedirectAttributes redirectAttributes) {
 
-        User user = userService.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = getCurrentUser(userDetails);
 
         List<Application> applications = applicationService.getUserApplications(user);
         model.addAttribute("allApplicationsList", applications);
@@ -129,9 +122,7 @@ public class InterviewController {
         Application application = applicationService.findApplicationById(applicationId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid application ID: " + applicationId));
 
-        if (!application.getUser().getId().equals(user.getId())) {
-            throw new IllegalArgumentException("Invalid application ID: " + applicationId);
-        }
+        requireApplicationOwner(application, user);
 
         InterviewType type;
         InterviewStatus status;
@@ -172,15 +163,12 @@ public class InterviewController {
     public String deleteInterview(@AuthenticationPrincipal UserDetails userDetails,
                                   @RequestParam("interviewId") Long interviewId,
                                   RedirectAttributes redirectAttributes) {
-        User user = userService.findByEmail(userDetails.getUsername())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        User user = getCurrentUser(userDetails);
 
         Interview interview = interviewService.findById(interviewId)
                 .orElseThrow(() -> new IllegalArgumentException("Invalid interview ID: " + interviewId));
 
-        if (!interview.getApplication().getUser().getId().equals(user.getId())) {
-            throw new IllegalArgumentException("Access denied");
-        }
+        requireInterviewOwner(interview, user);
 
         interviewService.delete(interview);
         redirectAttributes.addFlashAttribute("success", "Interview deleted successfully.");
@@ -189,10 +177,11 @@ public class InterviewController {
 
     @PostMapping("/interview/change/{id}")
     public String changeInterviewStatus(@AuthenticationPrincipal UserDetails userDetails,
-                                        @PathVariable("id") Long id,
-                                        @RequestParam("status") InterviewStatus status
+            @PathVariable("id") Long id,
+            @RequestParam("status") InterviewStatus status
                                         ){
-        Interview interview = interviewService.findById(id).get();
+        User user = getCurrentUser(userDetails);
+        Interview interview = getUserInterview(id, user);
         interview.setStatus(status);
         interviewService.save(interview);
         return "redirect:/interviews";
@@ -202,16 +191,21 @@ public class InterviewController {
     public String rescheduleInterview(@AuthenticationPrincipal UserDetails userDetails,
                                       @PathVariable("id") Long id,
                                       @RequestParam("newDateTime") LocalDateTime date){
-        Interview interview = interviewService.findById(id).get();
+        User user = getCurrentUser(userDetails);
+        Interview interview = getUserInterview(id, user);
         interview.setDateTime(date);
+        interview.setStatus(InterviewStatus.RESCHEDULED);
         interviewService.save(interview);
         return "redirect:/interviews";
     }
 
     @GetMapping("/interviews/edit/{id}")
-    public String showEditForm(@PathVariable("id") Long id, Model model) {
-        Interview interview = interviewService.findById(id)
-                .orElseThrow(() -> new RuntimeException("Interview not found"));
+    public String showEditForm(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable("id") Long id,
+            Model model) {
+        User user = getCurrentUser(userDetails);
+        Interview interview = getUserInterview(id, user);
 
         model.addAttribute("interview", interview);
         model.addAttribute("activeTab", "interviews");
@@ -219,15 +213,16 @@ public class InterviewController {
     }
 
     @PostMapping("/interviews/edit/{id}")
-    public String processEdit(@PathVariable("id") Long id,
+    public String processEdit(@AuthenticationPrincipal UserDetails userDetails,
+                              @PathVariable("id") Long id,
                               @RequestParam("type") com.cchqsa.job_application_tracker.enums.InterviewType type,
                               @RequestParam("dateTime") @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) java.time.LocalDateTime dateTime,
                               @RequestParam(value = "meetingUrl", required = false) String meetingUrl,
                               @RequestParam(value = "notes", required = false) String notes,
                               RedirectAttributes redirectAttributes) {
 
-        Interview existingInterview = interviewService.findById(id)
-                .orElseThrow(() -> new RuntimeException("Interview not found"));
+        User user = getCurrentUser(userDetails);
+        Interview existingInterview = getUserInterview(id, user);
 
         existingInterview.setType(type);
         existingInterview.setDateTime(dateTime);
@@ -248,5 +243,27 @@ public class InterviewController {
         model.addAttribute("applicationCompany", application.getCompany());
         model.addAttribute("applicationPosition", application.getPosition());
         model.addAttribute("activeTab", "interviews");
+    }
+
+    private User getCurrentUser(UserDetails userDetails) {
+        return userService.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    private Interview getUserInterview(Long id, User user) {
+        Interview interview = interviewService.findById(id)
+                .orElseThrow(() -> new RuntimeException("Interview not found"));
+        requireInterviewOwner(interview, user);
+        return interview;
+    }
+
+    private void requireApplicationOwner(Application application, User user) {
+        if (!application.getUser().getId().equals(user.getId())) {
+            throw new IllegalArgumentException("Access denied");
+        }
+    }
+
+    private void requireInterviewOwner(Interview interview, User user) {
+        requireApplicationOwner(interview.getApplication(), user);
     }
 }

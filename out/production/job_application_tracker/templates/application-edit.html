@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Application - JobTrack</title>
+  <link rel="stylesheet" th:href="@{/css/applications.css}">
+  <link rel="stylesheet" th:href="@{/css/interview-edit.css}">
+</head>
+<body class="dashboard-body">
+
+<aside class="sidebar">
+  <div class="sidebar-brand">JobTrack</div>
+  <nav class="sidebar-menu">
+    <a th:href="@{/home}" class="menu-item">Dashboard</a>
+    <a th:href="@{/applications}" class="menu-item active">Applications</a>
+    <a th:href="@{/interviews}" class="menu-item">Interviews</a>
+    <a th:href="@{/statistics}" class="menu-item">Statistics</a>
+    <a th:href="@{/settings}" class="menu-item">Settings</a>
+  </nav>
+  <div class="sidebar-footer">
+    <a th:href="@{/logout}" class="logout-link">Log Out</a>
+  </div>
+</aside>
+
+<main class="dashboard-container">
+  <header class="dashboard-header">
+    <h1>Edit Application</h1>
+    <p>Update company, role, status, compensation, and notes.</p>
+  </header>
+
+  <div class="form-container">
+    <div class="company-preview" th:text="${company} + ' - ' + ${position}"></div>
+
+    <form th:action="@{/applications/edit/{id}(id=${id})}" method="POST">
+      <div class="form-group">
+        <label for="company">Company</label>
+        <input type="text" id="company" name="company" class="form-control" required th:value="${company}">
+      </div>
+
+      <div class="form-group">
+        <label for="position">Position</label>
+        <input type="text" id="position" name="position" class="form-control" required th:value="${position}">
+      </div>
+
+      <div class="form-group">
+        <label for="location">Location</label>
+        <input type="text" id="location" name="location" class="form-control" required th:value="${location}">
+      </div>
+
+      <div class="form-group">
+        <label for="status">Status</label>
+        <select id="status" name="status" class="form-control" required>
+          <option value="APPLIED" th:selected="${status == 'APPLIED'}">Applied</option>
+          <option value="SCREENING" th:selected="${status == 'SCREENING'}">Screening</option>
+          <option value="INTERVIEW" th:selected="${status == 'INTERVIEW'}">Interview</option>
+          <option value="TECHNICAL_INTERVIEW" th:selected="${status == 'TECHNICAL_INTERVIEW'}">Technical Interview</option>
+          <option value="OFFER" th:selected="${status == 'OFFER'}">Offer</option>
+          <option value="REJECTED" th:selected="${status == 'REJECTED'}">Rejected</option>
+          <option value="WITHDRAWN" th:selected="${status == 'WITHDRAWN'}">Withdrawn</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="salaryFrom">Salary From</label>
+        <input type="number" id="salaryFrom" name="salaryFrom" class="form-control" required th:value="${salaryFrom}">
+      </div>
+
+      <div class="form-group">
+        <label for="salaryTo">Salary To</label>
+        <input type="number" id="salaryTo" name="salaryTo" class="form-control" required th:value="${salaryTo}">
+      </div>
+
+      <div class="form-group">
+        <label for="currency">Currency</label>
+        <select id="currency" name="currency" class="form-control">
+          <option value="USD" th:selected="${currency == 'USD'}">USD ($)</option>
+          <option value="EUR" th:selected="${currency == 'EUR'}">EUR</option>
+          <option value="GBP" th:selected="${currency == 'GBP'}">GBP</option>
+          <option value="JPY" th:selected="${currency == 'JPY'}">JPY</option>
+          <option value="AUD" th:selected="${currency == 'AUD'}">AUD ($)</option>
+          <option value="UAH" th:selected="${currency == 'UAH'}">UAH</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="applicationDate">Application Date</label>
+        <input type="date"
+               id="applicationDate"
+               name="applicationDate"
+               class="form-control"
+               required
+               th:value="${#temporals.format(applicationDate, 'yyyy-MM-dd')}">
+      </div>
+
+      <div class="form-group">
+        <label for="jobUrl">Job URL</label>
+        <input type="url" id="jobUrl" name="jobUrl" class="form-control" th:value="${jobUrl}">
+      </div>
+
+      <div class="form-group">
+        <label for="description">Description</label>
+        <textarea id="description" name="description" class="form-control" rows="4" th:text="${description}"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="notes">Notes</label>
+        <textarea id="notes" name="notes" class="form-control" rows="4" th:text="${notes}"></textarea>
+      </div>
+
+      <div class="form-actions-row">
+        <a th:href="@{/applications}" class="btn-cancel">Cancel</a>
+        <button type="submit" class="btn-save-action">Save Changes</button>
+      </div>
+    </form>
+  </div>
+</main>
+
+</body>
+</html>
