@@ -3,6 +3,7 @@ package com.cchqsa.job_application_tracker.Controller;
 import com.cchqsa.job_application_tracker.dto.UserDto;
 import com.cchqsa.job_application_tracker.entity.User;
 import com.cchqsa.job_application_tracker.mapper.ModelMapper;
+import com.cchqsa.job_application_tracker.security.jwt.JwtService;
 import com.cchqsa.job_application_tracker.service.UserService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,11 +27,13 @@ public class AuthController {
     private final UserService userService;
     private final ModelMapper<User, UserDto> userMapper;
     private final AuthenticationManager authenticationManager;
+    private final JwtService jwtService;
 
-    public AuthController(UserService userService, ModelMapper<User, UserDto> userMapper, AuthenticationManager authenticationManager) {
+    public AuthController(UserService userService, ModelMapper<User, UserDto> userMapper, AuthenticationManager authenticationManager, JwtService jwtService) {
         this.userService = userService;
         this.userMapper = userMapper;
         this.authenticationManager = authenticationManager;
+        this.jwtService = jwtService;
     }
 
     @GetMapping("/register")
@@ -55,13 +58,45 @@ public class AuthController {
             String token = userService.registerAndGetToken(email, password, name, lastName);
             addJwtCookie(response, token);
             authenticateAndStoreSession(email, password, request);
-            return "redirect:/home";
+            return "redirect:/general";
 
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/register";
         }
     }
+
+    @PostMapping("/login")
+    public String login(@RequestParam("email") String email,
+                        @RequestParam("password") String password,
+                        HttpServletRequest request,
+                        HttpServletResponse response,
+                        RedirectAttributes redirectAttributes) {
+        try {
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(email, password));
+
+            SecurityContext context = SecurityContextHolder.createEmptyContext();
+            context.setAuthentication(authentication);
+            SecurityContextHolder.setContext(context);
+
+            HttpSession session = request.getSession(true);
+            session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, context);
+
+            org.springframework.security.core.userdetails.UserDetails userDetails =
+                    (org.springframework.security.core.userdetails.UserDetails) authentication.getPrincipal();
+
+            String token = jwtService.generateToken(userDetails);
+            addJwtCookie(response, token);
+
+            return "redirect:/home";
+
+        } catch (org.springframework.security.core.AuthenticationException e) {
+            redirectAttributes.addFlashAttribute("error", "Invalid email or password.");
+            return "redirect:/login";
+        }
+    }
+
 
     private void addJwtCookie(HttpServletResponse response, String token) {
         Cookie jwtCookie = new Cookie("JWT_TOKEN", token);

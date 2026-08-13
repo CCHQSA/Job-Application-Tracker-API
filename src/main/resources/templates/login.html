@@ -16,6 +16,12 @@
     <p class="auth-subtitle">Log in to manage your job applications</p>
   </div>
 
+  <div th:if="${error != null or param.error != null}" class="error-message" style="margin-bottom: 1.5rem; padding: 0.875rem 1rem; border: 1px solid #fca5a5; border-radius: 8px; background-color: #fef2f2; color: #991b1b; font-weight: 600; font-size: 0.9rem;">
+    <span th:if="${error}" th:text="${error}"></span>
+    <span th:if="${param.error}">Invalid email or password.</span>
+  </div>
+
+
   <form th:action="@{/login}" method="POST" class="auth-form">
 
     <div class="form-group">
