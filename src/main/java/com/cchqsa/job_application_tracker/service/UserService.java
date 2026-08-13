@@ -12,5 +12,10 @@ public interface UserService {
     Optional<User> createUser(String email, String password, String name, String lastName);
 
     String registerAndGetToken(String email, String password, String name, String lastName);
+
+    void save(User user);
+
+    void deleteUser(User user);
 }
+
 

@@ -21,4 +21,6 @@ public interface InterviewService {
     Optional<Interview> findById(Long interviewId);
 
     void saveInterview(Interview existingInterview, Application application);
+
+    void deleteAllByApplications(List<Application> applicationList);
 }

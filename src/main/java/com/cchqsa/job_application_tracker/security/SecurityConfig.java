@@ -47,6 +47,7 @@ public class SecurityConfig {
                                 "/favicon.ico"
                         ).permitAll()
                         .anyRequest().authenticated())
+                .anonymous(anonymous -> anonymous.principal("anonymousUser"))
                 .formLogin(login -> login
                         .loginPage("/login")
                         .loginProcessingUrl("/login")

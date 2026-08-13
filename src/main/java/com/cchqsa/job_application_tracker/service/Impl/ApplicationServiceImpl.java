@@ -58,5 +58,10 @@ public class ApplicationServiceImpl implements ApplicationService {
         return applicationRepository.findById(id);
     }
 
+    @Override
+    public void deleteAllByUser(User user) {
+        applicationRepository.deleteAllByUser(user);
+    }
+
 
 }

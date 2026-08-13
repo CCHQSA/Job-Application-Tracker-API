@@ -66,4 +66,9 @@ public class InterviewServiceImpl implements InterviewService {
         }
     }
 
+    @Override
+    public void deleteAllByApplications(List<Application> applicationList) {
+        interviewRepository.deleteAllByApplicationIn(applicationList);
+    }
+
 }

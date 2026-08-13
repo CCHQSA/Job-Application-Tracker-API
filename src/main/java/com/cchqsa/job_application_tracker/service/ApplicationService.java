@@ -16,4 +16,6 @@ public interface ApplicationService {
     void deleteByIdAndUser(Long id, User user);
 
     Optional<Application> findApplicationById(Long id);
+
+    void deleteAllByUser(User user);
 }
