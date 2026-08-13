@@ -3,6 +3,7 @@ package com.cchqsa.job_application_tracker.Controller;
 import com.cchqsa.job_application_tracker.entity.Application;
 import com.cchqsa.job_application_tracker.entity.Interview;
 import com.cchqsa.job_application_tracker.entity.User;
+import com.cchqsa.job_application_tracker.enums.ApplicationStatus;
 import com.cchqsa.job_application_tracker.service.ApplicationService;
 import com.cchqsa.job_application_tracker.service.InterviewService;
 import com.cchqsa.job_application_tracker.service.UserService;
@@ -45,11 +46,15 @@ public class HomeController {
                 .sorted(java.util.Comparator.comparing(Interview::getDateTime))
                 .limit(5)
                 .collect(Collectors.toList());
+        List<Application> offersReceived = applications.stream().filter(app ->
+                app.getStatus() == ApplicationStatus.OFFER).toList();
         model.addAttribute("activeTab", "home");
         model.addAttribute("totalApplications", applications.size());
         model.addAttribute("recentApplications", recentApplications);
         model.addAttribute("user", user);
         model.addAttribute("upcomingInterviews", upcomingInterviews);
+        model.addAttribute("totalInterviews", interviews.size());
+        model.addAttribute("offersReceived", offersReceived.size());
 
         return "home";
     }

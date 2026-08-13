@@ -1,7 +1,7 @@
 package com.cchqsa.job_application_tracker.dto;
 
 import com.cchqsa.job_application_tracker.enums.ApplicationStatus;
-import com.cchqsa.job_application_tracker.enums.Currencies;
+import com.cchqsa.job_application_tracker.enums.Currency;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,7 +27,7 @@ public class ApplicationDto {
 
     private ApplicationStatus status;
 
-    private Currencies currency;
+    private Currency currency;
 
     private LocalDate applicationDate;
 

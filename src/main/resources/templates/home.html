@@ -24,6 +24,9 @@
     <a th:href="@{/statistics}"
        class="menu-item"
        th:classappend="${activeTab == 'statistics' ? 'active' : ''}">Statistics</a>
+    <a href="/settings"
+       class="menu-item"
+       th:classappend="${activeTab == 'settings' ? 'active' : ''}">Settings</a>
   </nav>
   <div class="sidebar-footer">
     <a th:href="@{/logout}" class="logout-link">Log Out</a>
@@ -63,8 +66,11 @@
 
         <section class="quick-add-section">
           <h2>Quick Add Application</h2>
+
           <form th:action="@{/applications}" method="POST" class="quick-add-form">
+
             <input type="hidden" name="sourcePage" value="home">
+
             <div class="form-group">
               <label for="company">Company</label>
               <input type="text" id="company" name="company" required placeholder="Google">
@@ -74,6 +80,7 @@
               <label for="position">Position</label>
               <input type="text" id="position" name="position" required placeholder="Software Engineer">
             </div>
+
             <div class="form-group">
               <label for="location">Location</label>
               <input type="text" id="location" name="location" required placeholder="Kyiv or Remote">
@@ -88,16 +95,26 @@
                 <label for="salaryTo">Salary To</label>
                 <input type="number" id="salaryTo" name="salaryTo" required placeholder="4500">
               </div>
+              <div class="form-group">
+                <label for="currency">Currency</label>
+                <select id="currency" name="currency" required>
+                  <option value="USD" selected>USD ($)</option>
+                  <option value="EUR">EUR (€)</option>
+                  <option value="GBP">GBP (£)</option>
+                  <option value="JPY">JPY (¥)</option>
+                  <option value="AUD">AUD ($)</option>
+                  <option value="UAH">UAH (₴)</option>
+                </select>
+              </div>
             </div>
+
             <div class="form-group">
               <label for="applicationDate">Application Date</label>
-              <input type="date" id="applicationDate" name="applicationDate" required
-                     th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
+              <input type="date" id="applicationDate" name="applicationDate" required th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
             </div>
 
-            <button type="submit" class="primary-button btn-full">Add Application</button>
+            <button type="submit" class="btn-full">Add Application</button>
           </form>
-
         </section>
 
         <section class="recent-applications">

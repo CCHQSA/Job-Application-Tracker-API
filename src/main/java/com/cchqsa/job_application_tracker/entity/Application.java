@@ -1,7 +1,7 @@
 package com.cchqsa.job_application_tracker.entity;
 
 import com.cchqsa.job_application_tracker.enums.ApplicationStatus;
-import com.cchqsa.job_application_tracker.enums.Currencies;
+import com.cchqsa.job_application_tracker.enums.Currency;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -42,7 +42,7 @@ public class Application {
     private ApplicationStatus status = ApplicationStatus.APPLIED;
 
     @Enumerated(EnumType.STRING)
-    private Currencies currency = Currencies.USD;
+    private Currency currency;
 
     @NotNull
     private LocalDate applicationDate;
@@ -61,6 +61,8 @@ public class Application {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @OneToMany(mappedBy = "application")
-    List<Interview> interviews;
+    @OneToMany(mappedBy = "application", cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private List<Interview> interviews;
+
+
 }

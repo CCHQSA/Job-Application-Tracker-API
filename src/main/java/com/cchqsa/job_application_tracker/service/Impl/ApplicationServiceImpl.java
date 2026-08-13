@@ -5,6 +5,7 @@ import com.cchqsa.job_application_tracker.entity.User;
 import com.cchqsa.job_application_tracker.repository.ApplicationRepository;
 import com.cchqsa.job_application_tracker.repository.UserRepository;
 import com.cchqsa.job_application_tracker.service.ApplicationService;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -43,10 +44,13 @@ public class ApplicationServiceImpl implements ApplicationService {
                 .limit(5)
                 .collect(Collectors.toList());
     }
-
     @Override
+    @Transactional
     public void deleteByIdAndUser(Long id, User user) {
-        userRepository.deleteByIdAndUser(id, user);
+
+        Application application = applicationRepository.findByIdAndUser(id, user)
+                .orElseThrow(() -> new RuntimeException("Application not found or access denied"));
+        applicationRepository.delete(application);
     }
 
     @Override

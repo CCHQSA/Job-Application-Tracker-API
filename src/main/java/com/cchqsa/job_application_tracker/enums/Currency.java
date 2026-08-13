@@ -3,7 +3,7 @@ package com.cchqsa.job_application_tracker.enums;
 import lombok.Getter;
 
 @Getter
-public enum Currencies {
+public enum Currency {
     USD("$", "US Dollar"),
     EUR("€", "Euro"),
     UAH("₴", "Ukrainian Hryvnia"),
@@ -16,7 +16,7 @@ public enum Currencies {
     private final String symbol;
     private final String fullName;
 
-    Currencies(String symbol, String fullName) {
+    Currency(String symbol, String fullName) {
         this.symbol = symbol;
         this.fullName = fullName;
     }

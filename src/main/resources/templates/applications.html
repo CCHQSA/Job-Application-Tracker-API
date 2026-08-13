@@ -3,31 +3,34 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard</title>
+  <title>Your Applications - JobTrack</title>
   <link rel="stylesheet" th:href="@{/css/applications.css}">
 </head>
 <body class="dashboard-body">
+
 <aside class="sidebar">
-  <a href="/dashboard" class="sidebar-brand">Tracker</a>
+  <div class="sidebar-brand">JobTrack</div>
   <nav class="sidebar-menu">
-    <a href="/home"
+    <a th:href="@{/home}"
        class="menu-item"
        th:classappend="${activeTab == 'home' ? 'active' : ''}">Dashboard</a>
-    <a href="/applications"
+    <a th:href="@{/applications}"
        class="menu-item"
        th:classappend="${activeTab == 'applications' ? 'active' : ''}">Applications</a>
-    <a href="/interviews"
+    <a th:href="@{/interviews}"
        class="menu-item"
        th:classappend="${activeTab == 'interviews' ? 'active' : ''}">Interviews</a>
-    <a href="/settings"
+    <a th:href="@{/statistics}"
+       class="menu-item"
+       th:classappend="${activeTab == 'statistics' ? 'active' : ''}">Statistics</a>
+    <a th:href="@{/settings}"
        class="menu-item"
        th:classappend="${activeTab == 'settings' ? 'active' : ''}">Settings</a>
   </nav>
   <div class="sidebar-footer">
-    <a href="/logout" class="logout-link">Logout</a>
+    <a th:href="@{/logout}" class="logout-link">Log Out</a>
   </div>
 </aside>
-
 
 <main class="dashboard-container">
   <header class="dashboard-header">
@@ -41,11 +44,11 @@
     </div>
     <div class="stat-card">
       <h3>Interviews</h3>
-      <div class="stat-number color-success">0</div>
+      <div class="stat-number color-success" th:text="${totalInterviews != null ? totalInterviews : 0}">0</div>
     </div>
     <div class="stat-card">
       <h3>Pending</h3>
-      <div class="stat-number">0</div>
+      <div class="stat-number" th:text="${pendingApplications != null ? pendingApplications : 0}">0</div>
     </div>
   </div>
 
@@ -55,16 +58,37 @@
         <h2>Recent Applications</h2>
         <div class="app-list">
           <div th:each="app : ${applications}" class="app-item">
+
             <div class="app-info">
               <h4 th:text="${app.company}">Company Name</h4>
               <p th:text="${app.position}">Position</p>
             </div>
 
             <div class="app-actions">
-            <span th:text="${app.status}" class="status-badge"
-                  th:classappend="${app.status.name() == 'INTERVIEW' ? 'status-interview' : 'status-applied'}">
-                APPLIED
-            </span>
+
+              <form th:action="@{/applications/change-status/{id}(id=${app.id})}" method="POST" style="display:inline;">
+                <input type="hidden" name="_method" value="CHANGE" />
+
+                <div class="status-split-group">
+                  <button type="submit" class="status-change-btn">Change</button>
+
+                  <select name="status"
+                          class="status-select-input"
+                          th:classappend="${
+                            app.status?.name() == 'OFFER' ? 'badge-offer' :
+                            (app.status?.name() == 'REJECTED' ? 'badge-rejected' :
+                            (app.status?.name() == 'INTERVIEW' || app.status?.name() == 'TECHNICAL_INTERVIEW' ? 'badge-interview' : 'badge-applied'))
+                          }">
+                    <option value="APPLIED" th:selected="${app.status?.name() == 'APPLIED'}">Applied</option>
+                    <option value="SCREENING" th:selected="${app.status?.name() == 'SCREENING'}">Screening</option>
+                    <option value="INTERVIEW" th:selected="${app.status?.name() == 'INTERVIEW'}">Interview</option>
+                    <option value="TECHNICAL_INTERVIEW" th:selected="${app.status?.name() == 'TECHNICAL_INTERVIEW'}">Technical Interview</option>
+                    <option value="OFFER" th:selected="${app.status?.name() == 'OFFER'}">Offer</option>
+                    <option value="REJECTED" th:selected="${app.status?.name() == 'REJECTED'}">Rejected</option>
+                    <option value="WITHDRAWN" th:selected="${app.status?.name() == 'WITHDRAWN'}">Withdrawn</option>
+                  </select>
+                </div>
+              </form>
 
               <form th:action="@{/applications/delete/{id}(id=${app.id})}" method="POST" style="display:inline;">
                 <input type="hidden" name="_method" value="DELETE" />
@@ -72,8 +96,10 @@
                   Delete
                 </button>
               </form>
+
             </div>
           </div>
+
           <div th:if="${#lists.isEmpty(applications)}" class="app-info">
             <p>No applications found.</p>
           </div>
@@ -83,9 +109,10 @@
 
     <div class="grid-column">
       <section>
-        <h2>Quick Add</h2>
+        <h2>Add Application</h2>
         <form th:action="@{/applications}" method="POST" class="quick-add-form">
           <input type="hidden" name="sourcePage" value="applications">
+
           <div class="form-group">
             <label for="company">Company</label>
             <input type="text" id="company" name="company" required placeholder="Google">
@@ -104,21 +131,63 @@
           <div class="form-row">
             <div class="form-group">
               <label for="salaryFrom">Salary From</label>
-              <input type="number" id="salaryFrom" name="salaryFrom" required placeholder="3000">
+              <input type="number" id="salaryFrom" name="salaryFrom" placeholder="3000">
             </div>
+
             <div class="form-group">
               <label for="salaryTo">Salary To</label>
-              <input type="number" id="salaryTo" name="salaryTo" required placeholder="4500">
+              <input type="number" id="salaryTo" name="salaryTo" placeholder="4500">
+            </div>
+
+            <div class="form-group">
+              <label for="currency">Currency</label>
+              <select id="currency" name="currency">
+                <option value="USD" selected>USD ($)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="GBP">GBP (£)</option>
+                <option value="JPY">JPY (¥)</option>
+                <option value="AUD">AUD ($)</option>
+                <option value="UAH">UAH (₴)</option>
+              </select>
             </div>
           </div>
 
           <div class="form-group">
             <label for="applicationDate">Application Date</label>
-            <input type="date" id="applicationDate" name="applicationDate" required
+            <input type="date"
+                   id="applicationDate"
+                   name="applicationDate"
+                   required
                    th:value="${#temporals.format(#temporals.createNow(), 'yyyy-MM-dd')}">
           </div>
 
-          <button type="submit" class="btn-full">Add Application</button>
+          <div class="form-group">
+            <label for="jobUrl">Job URL</label>
+            <input type="url"
+                   id="jobUrl"
+                   name="jobUrl"
+                   placeholder="https://example.com/job">
+          </div>
+
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description"
+                      name="description"
+                      rows="4"
+                      placeholder="Short description of the position..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="notes">Notes</label>
+            <textarea id="notes"
+                      name="notes"
+                      rows="4"
+                      placeholder="Your notes about this application..."></textarea>
+          </div>
+
+          <button type="submit" class="btn-full">
+            Add Application
+          </button>
         </form>
       </section>
     </div>

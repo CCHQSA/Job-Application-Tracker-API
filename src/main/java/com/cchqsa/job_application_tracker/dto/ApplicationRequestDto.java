@@ -1,6 +1,7 @@
 package com.cchqsa.job_application_tracker.dto;
 
 import com.cchqsa.job_application_tracker.entity.Interview;
+import com.cchqsa.job_application_tracker.enums.Currency;
 import lombok.Getter;
 import lombok.Setter;
 import java.math.BigDecimal;
@@ -17,4 +18,8 @@ public class ApplicationRequestDto {
     private String location;
     private LocalDate applicationDate;
     private List<Interview> interviews;
+    private Currency currency;
+    private String jobUrl;
+    private String description;
+    private String notes;
 }

@@ -8,15 +8,26 @@
 </head>
 <body class="dashboard-body">
 <aside class="sidebar">
-  <a th:href="@{/home}" class="sidebar-brand">Tracker</a>
+  <div class="sidebar-brand">JobTrack</div>
   <nav class="sidebar-menu">
-    <a th:href="@{/home}" class="menu-item">Dashboard</a>
-    <a th:href="@{/applications}" class="menu-item">Applications</a>
-    <a th:href="@{/interviews}" class="menu-item">Interviews</a>
-    <a th:href="@{/statistics}" class="menu-item active">Statistics</a>
+    <a th:href="@{/home}"
+       class="menu-item"
+       th:classappend="${activeTab == 'home' ? 'active' : ''}">Dashboard</a>
+    <a th:href="@{/applications}"
+       class="menu-item"
+       th:classappend="${activeTab == 'applications' ? 'active' : ''}">Applications</a>
+    <a th:href="@{/interviews}"
+       class="menu-item"
+       th:classappend="${activeTab == 'interviews' ? 'active' : ''}">Interviews</a>
+    <a th:href="@{/statistics}"
+       class="menu-item"
+       th:classappend="${activeTab == 'statistics' ? 'active' : ''}">Statistics</a>
+    <a href="/settings"
+       class="menu-item"
+       th:classappend="${activeTab == 'settings' ? 'active' : ''}">Settings</a>
   </nav>
   <div class="sidebar-footer">
-    <a th:href="@{/logout}" class="logout-link">Logout</a>
+    <a th:href="@{/logout}" class="logout-link">Log Out</a>
   </div>
 </aside>
 
