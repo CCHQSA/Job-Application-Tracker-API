@@ -324,6 +324,29 @@ section h2 {
     background-color: #bd2130;
 }
 
+.btn-edit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 34px;
+    background-color: #f1f5f9;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1;
+    text-decoration: none;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.btn-edit:hover {
+    background-color: #e2e8f0;
+    border-color: #94a3b8;
+}
+
 .status-split-group {
     display: inline-flex;
     align-items: center;

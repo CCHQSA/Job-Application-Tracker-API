@@ -66,6 +66,8 @@
 
             <div class="app-actions">
 
+              <a th:href="@{/applications/edit/{id}(id=${app.id})}" class="btn-edit">Edit</a>
+
               <form th:action="@{/applications/change-status/{id}(id=${app.id})}" method="POST" style="display:inline;">
                 <input type="hidden" name="_method" value="CHANGE" />
 
