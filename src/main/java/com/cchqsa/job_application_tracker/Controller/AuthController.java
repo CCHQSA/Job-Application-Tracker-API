@@ -58,13 +58,14 @@ public class AuthController {
             String token = userService.registerAndGetToken(email, password, name, lastName);
             addJwtCookie(response, token);
             authenticateAndStoreSession(email, password, request);
-            return "redirect:/general";
+            return "redirect:/home";
 
         } catch (RuntimeException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/register";
         }
     }
+
 
     @PostMapping("/login")
     public String login(@RequestParam("email") String email,
