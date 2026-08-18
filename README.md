@@ -111,6 +111,7 @@ Users can:
 * PostgreSQL
 * Thymeleaf
 * Jakarta Bean Validation
+* OpenAPI / Swagger UI
 * Lombok
 * Maven
 * HTML
@@ -157,6 +158,22 @@ On Windows:
 ```bash
 mvnw.cmd spring-boot:run
 ```
+
+## API Documentation
+
+With the application running, Swagger UI is available at:
+
+```text
+http://localhost:8080/swagger-ui.html
+```
+
+The generated OpenAPI specification is available as JSON at:
+
+```text
+http://localhost:8080/v3/api-docs
+```
+
+The documentation pages are public. Protected operations still require authentication; log in through the application first so the browser has the `JWT_TOKEN` cookie.
 
 ## Purpose
 
