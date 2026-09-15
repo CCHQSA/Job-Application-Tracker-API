@@ -25,12 +25,12 @@ public class InterviewServiceImpl implements InterviewService {
 
     @Override
     public List<Interview> findByApplicationIn(List<Application> applications) {
-        return interviewRepository.findByApplicationIn(applications);
+        return interviewRepository.findByApplicationInWithApplication(applications);
     }
 
     @Override
     public List<Interview> findAllByApplicationIn(List<Application> applications) {
-        return interviewRepository.findByApplicationInOrderByDateTimeDesc(applications);
+        return interviewRepository.findByApplicationInWithApplication(applications);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class InterviewServiceImpl implements InterviewService {
 
     @Override
     public Optional<Interview> findById(Long interviewId) {
-        return interviewRepository.findById(interviewId);
+        return interviewRepository.findByIdWithApplicationAndUser(interviewId);
     }
 
     @Override

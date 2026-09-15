@@ -9,11 +9,34 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface InterviewRepository extends JpaRepository<Interview,Long> {
+public interface InterviewRepository extends JpaRepository<Interview, Long> {
+
     List<Interview> findByApplicationIn(List<Application> applications);
 
     List<Interview> findByApplicationInOrderByDateTimeDesc(List<Application> applications);
+
+    @Query("""
+        SELECT i
+        FROM Interview i
+        JOIN FETCH i.application a
+        JOIN FETCH a.user
+        WHERE i.application IN :applications
+        ORDER BY i.dateTime DESC
+    """)
+    List<Interview> findByApplicationInWithApplication(
+            @Param("applications") List<Application> applications
+    );
+
+    @Query("""
+        SELECT i
+        FROM Interview i
+        JOIN FETCH i.application a
+        JOIN FETCH a.user
+        WHERE i.id = :interviewId
+    """)
+    Optional<Interview> findByIdWithApplicationAndUser(@Param("interviewId") Long interviewId);
 
     @Modifying
     @Transactional
