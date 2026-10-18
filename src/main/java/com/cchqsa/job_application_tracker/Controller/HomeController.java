@@ -8,13 +8,13 @@ import com.cchqsa.job_application_tracker.service.ApplicationService;
 import com.cchqsa.job_application_tracker.service.InterviewService;
 import com.cchqsa.job_application_tracker.service.UserService;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,8 +42,8 @@ public class HomeController {
         List<Interview> interviews = interviewService.findByApplicationIn(applications);
 
         List<Interview> upcomingInterviews = interviews.stream()
-                .filter(interview -> interview.getDateTime() != null && interview.getDateTime().isAfter(java.time.LocalDateTime.now()))
-                .sorted(java.util.Comparator.comparing(Interview::getDateTime))
+                .filter(interview -> interview.getDateTime() != null && interview.getDateTime().isAfter(LocalDateTime.now()))
+                .sorted(Comparator.comparing(Interview::getDateTime))
                 .limit(5)
                 .collect(Collectors.toList());
         List<Application> offersReceived = applications.stream().filter(app ->

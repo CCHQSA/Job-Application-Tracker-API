@@ -8,11 +8,15 @@ import com.cchqsa.job_application_tracker.enums.InterviewType;
 import com.cchqsa.job_application_tracker.service.ApplicationService;
 import com.cchqsa.job_application_tracker.service.InterviewService;
 import com.cchqsa.job_application_tracker.service.UserService;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDateTime;
@@ -215,8 +219,8 @@ public class InterviewController {
     @PostMapping("/interviews/edit/{id}")
     public String processEdit(@AuthenticationPrincipal UserDetails userDetails,
                               @PathVariable("id") Long id,
-                              @RequestParam("type") com.cchqsa.job_application_tracker.enums.InterviewType type,
-                              @RequestParam("dateTime") @org.springframework.format.annotation.DateTimeFormat(iso = org.springframework.format.annotation.DateTimeFormat.ISO.DATE_TIME) java.time.LocalDateTime dateTime,
+                              @RequestParam("type") InterviewType type,
+                              @RequestParam("dateTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime dateTime,
                               @RequestParam(value = "meetingUrl", required = false) String meetingUrl,
                               @RequestParam(value = "notes", required = false) String notes,
                               RedirectAttributes redirectAttributes) {
